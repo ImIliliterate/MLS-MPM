@@ -1,0 +1,200 @@
+[
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/cc  -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -O3 -DNDEBUG -arch arm64 -o CMakeFiles/glad.dir/external/glad/src/glad.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/external/glad/src/glad.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/src/glad.c",
+  "output": "CMakeFiles/glad.dir/external/glad/src/glad.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/imgui.dir/_deps/imgui-src/imgui.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui.cpp",
+  "output": "CMakeFiles/imgui.dir/_deps/imgui-src/imgui.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/imgui.dir/_deps/imgui-src/imgui_demo.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui_demo.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui_demo.cpp",
+  "output": "CMakeFiles/imgui.dir/_deps/imgui-src/imgui_demo.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/imgui.dir/_deps/imgui-src/imgui_draw.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui_draw.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui_draw.cpp",
+  "output": "CMakeFiles/imgui.dir/_deps/imgui-src/imgui_draw.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/imgui.dir/_deps/imgui-src/imgui_tables.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui_tables.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui_tables.cpp",
+  "output": "CMakeFiles/imgui.dir/_deps/imgui-src/imgui_tables.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/imgui.dir/_deps/imgui-src/imgui_widgets.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui_widgets.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/imgui_widgets.cpp",
+  "output": "CMakeFiles/imgui.dir/_deps/imgui-src/imgui_widgets.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/imgui.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends/imgui_impl_glfw.cpp",
+  "output": "CMakeFiles/imgui.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/imgui.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends/imgui_impl_opengl3.cpp",
+  "output": "CMakeFiles/imgui.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/main.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/main.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/main.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/main.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/sim/Coupling.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/Coupling.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/sim/Coupling.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/sim/Coupling.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/SmokeRenderer.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/render/SmokeRenderer.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Shader.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/render/Shader.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Camera.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/render/Camera.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/context.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/context.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/context.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/init.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/init.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/init.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/init.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/input.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/input.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/input.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/input.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/monitor.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/monitor.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/monitor.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/monitor.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/vulkan.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/vulkan.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/vulkan.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/vulkan.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/window.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/window.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/window.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/window.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_init.m.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_init.m",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_init.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_init.m.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_joystick.m.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_joystick.m",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_joystick.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_joystick.m.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_monitor.m.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_monitor.m",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_monitor.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_monitor.m.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_window.m.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_window.m",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_window.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_window.m.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/cocoa_time.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_time.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/cocoa_time.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/cocoa_time.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/posix_thread.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/posix_thread.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/posix_thread.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/posix_thread.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/nsgl_context.m.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/nsgl_context.m",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/nsgl_context.m",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/nsgl_context.m.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/egl_context.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/egl_context.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/egl_context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/egl_context.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src",
+  "command": "/usr/bin/cc -D_GLFW_USE_CONFIG_H -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src -O3 -DNDEBUG -std=gnu99 -arch arm64 -fPIC -Wall -o CMakeFiles/glfw.dir/osmesa_context.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/osmesa_context.c",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/src/osmesa_context.c",
+  "output": "_deps/glfw-build/src/CMakeFiles/glfw.dir/osmesa_context.c.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-build/glm",
+  "command": "/usr/bin/c++  -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -O3 -march=native -std=c++17 -arch arm64 -Wno-c++98-compat -Wno-c++98-compat-pedantic -o CMakeFiles/glm.dir/detail/glm.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src/glm/detail/glm.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src/glm/detail/glm.cpp",
+  "output": "_deps/glm-build/glm/CMakeFiles/glm.dir/detail/glm.cpp.o"
+}
+]

@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"/Users/suaz/Documents/GitHub/MLS-MPM/build/cmake_install.cmake",
+		"/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/cmake_install.cmake",
+		"/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-build/src/cmake_install.cmake",
+		"/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-build/cmake_install.cmake",
+		"/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-build/glm/cmake_install.cmake"
+	],
+	"Parallel" : false
+}
