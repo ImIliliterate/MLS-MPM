@@ -60,7 +60,12 @@ private:
     // Track previous particle velocities for impact detection
     std::vector<glm::vec3> prevVelocities;
     
+    // Phase 1.2: Neighbor counts for surface detection
+    std::vector<int> neighborCounts;
+    void buildNeighborCounts();
+    
     // Helper to estimate if a particle is near the surface
     bool isNearSurface(const Particle& p) const;
+    bool isNearSurface(size_t particleIdx) const;
 };
 

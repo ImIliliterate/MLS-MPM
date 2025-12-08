@@ -30,6 +30,7 @@
 #include "sim/SmokeSim.h"
 #include "sim/Coupling.h"
 #include "sim/SDF.h"
+#include "sim/SimulationParams.h"
 
 #include "render/Camera.h"
 #include "render/Shader.h"
@@ -91,7 +92,13 @@ struct AppState {
     bool showUI = true;
     bool renderLiquid = true;
     bool renderSmoke = true;
-    bool renderPoints = true;  // Start with point mode to see particles
+    bool renderPoints = false;  // Use mesh rendering for smoother appearance
+    
+    // Performance settings - balanced for laptops
+    bool performanceMode = false;  // OFF to get fluid look
+    bool enableCohesion = false;   // Still OFF (too expensive)
+    bool enableSmokeSimulation = false;  // OFF for now
+    int substeps = 3;  // Middle ground
     
     // Stats
     float mpmTime = 0.0f;
@@ -181,11 +188,25 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 void initSimulation(DemoScene scene) {
-    // Reset simulations
-    g_app.mpm.init(64, 64, 64);
-    g_app.smoke.init(32, 32, 32);
+    // Phase 1: Apply resolution preset for good PPC
+    int gridRes = g_params.liquidGridRes;
+    // Iteration 3: Resolution presets
+    switch (g_params.fluidPreset) {
+        case FluidPreset::Coarse:
+            gridRes = 48;   // Faster, still decent
+            break;
+        case FluidPreset::Default:
+            gridRes = 64;   // Iteration 3: 64³ default
+            break;
+        case FluidPreset::Fine:
+            gridRes = 80;   // More detail
+            break;
+    }
+    
+    g_app.mpm.init(gridRes, gridRes, gridRes);
+    g_app.smoke.init(g_params.smokeGridRes, g_params.smokeGridRes, g_params.smokeGridRes);
     g_app.coupling.init(&g_app.mpm, &g_app.smoke);
-    g_app.coupling.enabled = false;  // Disable coupling for debugging
+    g_app.coupling.enabled = g_params.enableCoupling;
     
     g_app.sdfScene.clear();
     g_app.sdfScene.addFloor(0.05f);
@@ -193,8 +214,17 @@ void initSimulation(DemoScene scene) {
     g_app.simTime = 0.0f;
     g_app.accumulator = 0.0f;
     
-    // Increase point size for visibility
-    g_app.liquidRenderer.pointSize = 8.0f;
+    // Iteration 3: Particle spacing = dx * 0.5 for ~8 PPC in filled regions
+    // With 64³ grid: dx = 1.0/64 ≈ 0.0156
+    // spacing = dx * 0.5 ≈ 0.0078, giving ~8 particles per cell
+    float dx = 1.0f / static_cast<float>(gridRes);
+    float spacing = dx * g_params.particleSpacingFactor;  // Iteration 3: dx * 0.5
+    g_params.dx = dx;  // Store for diagnostics
+    
+    // Iteration 3: Particle render radius tied to dx
+    g_app.liquidRenderer.pointSize = g_params.particleRenderRadius * dx * 1000.0f;
+    g_app.liquidRenderer.isoLevel = g_params.isoThreshold;
+    g_app.renderPoints = false;
     
     switch (scene) {
         case DemoScene::FallingBlock: {
@@ -203,10 +233,9 @@ void initSimulation(DemoScene scene) {
                 glm::vec3(0.3f, 0.5f, 0.3f),
                 glm::vec3(0.7f, 0.8f, 0.7f),
                 glm::vec3(0.0f),
-                0.015f,
+                spacing,
                 1000.0f
             );
-            std::cout << "Created " << g_app.mpm.particles.size() << " particles" << std::endl;
             break;
         }
         
@@ -220,19 +249,18 @@ void initSimulation(DemoScene scene) {
             g_app.mpm.addBox(
                 glm::vec3(0.2f, 0.7f, 0.4f),
                 glm::vec3(0.4f, 0.9f, 0.6f),
-                glm::vec3(0.5f, 0.0f, 0.0f),  // Slight horizontal velocity
-                0.012f,
+                glm::vec3(0.5f, 0.0f, 0.0f),
+                spacing,
                 1000.0f
             );
             
-            // Increase smoke splash effects
             g_app.coupling.splashDensityAmount = 8.0f;
             g_app.coupling.splashTemperatureAmount = 3.0f;
             break;
         }
         
         case DemoScene::BoilingCauldron: {
-            // Bowl shape (approximated with a low sphere)
+            // Bowl shape
             g_app.sdfScene.addSphere(glm::vec3(0.5f, 0.0f, 0.5f), 0.35f);
             
             // Water in the bowl
@@ -240,25 +268,21 @@ void initSimulation(DemoScene scene) {
                 glm::vec3(0.5f, 0.25f, 0.5f),
                 0.2f,
                 glm::vec3(0.0f),
-                0.015f,
+                spacing,
                 1000.0f
             );
-            
-            // Hot region will be added during simulation
             break;
         }
         
         case DemoScene::FanTest: {
             // Pool of water
             g_app.mpm.addBox(
-                glm::vec3(0.2f, 0.05f, 0.2f),
-                glm::vec3(0.8f, 0.3f, 0.8f),
+                glm::vec3(0.25f, 0.05f, 0.25f),
+                glm::vec3(0.75f, 0.25f, 0.75f),
                 glm::vec3(0.0f),
-                0.02f,
+                spacing * 1.2f,  // Even fewer particles
                 1000.0f
             );
-            
-            // Fan will inject velocity during simulation
             break;
         }
     }
@@ -270,34 +294,59 @@ void initSimulation(DemoScene scene) {
     g_app.mpm.sdfGradFunc = [](const glm::vec3& p) -> glm::vec3 {
         return g_app.sdfScene.gradient(p);
     };
+    
+    // Iteration 3: Enhanced PPC diagnostics
+    int numCells = gridRes * gridRes * gridRes;
+    int numParticles = static_cast<int>(g_app.mpm.particles.size());
+    float avgPPC = static_cast<float>(numParticles) / static_cast<float>(numCells);
+    
+    std::cout << "\n========== ITERATION 3 INIT ==========" << std::endl;
+    std::cout << "Grid resolution: " << gridRes << "³ = " << numCells << " cells" << std::endl;
+    std::cout << "Cell size (dx): " << dx << std::endl;
+    std::cout << "Particle spacing: " << spacing << " (dx * " << g_params.particleSpacingFactor << ")" << std::endl;
+    std::cout << "Total particles: " << numParticles << std::endl;
+    std::cout << "Avg PPC (global): " << avgPPC << std::endl;
+    std::cout << "Target: 150k+ particles, 8+ PPC in filled regions" << std::endl;
+    std::cout << "---------------------------------------" << std::endl;
+    std::cout << "FLIP ratio: " << g_params.flipRatio << " (" << (g_params.flipRatio * 100) << "% FLIP)" << std::endl;
+    std::cout << "Stiffness K: " << g_params.stiffnessK << std::endl;
+    std::cout << "Damping: " << g_params.damping << std::endl;
+    std::cout << "Viscosity blend: " << g_params.viscosityBlend << std::endl;
+    std::cout << "Grid smoothing: " << (g_params.enableGridSmoothing ? "ON" : "OFF") << std::endl;
+    std::cout << "======================================\n" << std::endl;
 }
 
 void simulationStep(float dt) {
-    float subDt = dt / SUBSTEPS;
+    int numSubsteps = g_app.substeps;
+    float subDt = dt / numSubsteps;
     
-    for (int i = 0; i < SUBSTEPS; i++) {
+    // Sync global params with simulation objects
+    g_app.mpm.enableCohesion = g_params.enableCohesion && !g_app.performanceMode;
+    g_app.mpm.gravity = g_params.gravity;
+    g_app.mpm.flipRatio = g_params.flipRatio;
+    g_app.coupling.enabled = g_params.enableCoupling && !g_app.performanceMode;
+    
+    for (int i = 0; i < numSubsteps; i++) {
         // MPM step
         auto mpmStart = std::chrono::high_resolution_clock::now();
         g_app.mpm.step(subDt);
         auto mpmEnd = std::chrono::high_resolution_clock::now();
         g_app.mpmTime = std::chrono::duration<float, std::milli>(mpmEnd - mpmStart).count();
         
-        // Smoke step
+        // Smoke step (can be disabled for performance)
         auto smokeStart = std::chrono::high_resolution_clock::now();
         
+        if (g_params.enableSmokeSimulation && !g_app.performanceMode) {
         // Scene-specific smoke sources
         switch (g_app.currentScene) {
             case DemoScene::BoilingCauldron:
-                // Add heat at the bottom
                 g_app.smoke.addTemperature(glm::vec3(0.5f, 0.1f, 0.5f), 0.5f, 0.15f);
                 g_app.smoke.addDensity(glm::vec3(0.5f, 0.15f, 0.5f), 0.2f, 0.1f);
                 break;
                 
             case DemoScene::FanTest:
-                // Fan blowing from the side
                 g_app.smoke.addVelocity(glm::vec3(0.0f, 0.3f, 0.5f), 
                                         glm::vec3(3.0f, 0.0f, 0.0f), 0.15f);
-                // Some smoke to visualize
                 g_app.smoke.addDensity(glm::vec3(0.1f, 0.3f, 0.5f), 0.3f, 0.08f);
                 break;
                 
@@ -306,6 +355,10 @@ void simulationStep(float dt) {
         }
         
         g_app.smoke.step(subDt);
+            
+            // Update smoke diagnostics
+            g_params.maxSmokeSpeed = g_app.smoke.getMaxSpeed();
+        }
         auto smokeEnd = std::chrono::high_resolution_clock::now();
         g_app.smokeTime = std::chrono::duration<float, std::milli>(smokeEnd - smokeStart).count();
         
@@ -347,7 +400,7 @@ void render() {
         g_app.liquidRenderer.updateParticles(g_app.mpm.particles);
         
         if (!g_app.renderPoints) {
-            g_app.liquidRenderer.generateMesh(g_app.mpm, 0.5f);
+            g_app.liquidRenderer.generateMesh(g_app.mpm, g_params.isoThreshold);
         }
         
         g_app.liquidRenderer.render(view, projection, cameraPos, lightDir);
@@ -368,19 +421,41 @@ void renderUI() {
         
         ImGui::Begin("MLS-MPM + Smoke Simulation", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
         
-        // Stats
+        // ==================== DIAGNOSTICS ====================
+        if (ImGui::CollapsingHeader("Diagnostics", ImGuiTreeNodeFlags_DefaultOpen)) {
         ImGui::Text("FPS: %.1f", g_app.fps);
-        ImGui::Text("Particles: %zu", g_app.mpm.particles.size());
-        ImGui::Text("Triangles: %zu", g_app.liquidRenderer.getTriangleCount());
+            ImGui::Text("Particles: %d", g_params.numLiquidParticles);
+            
+            // Phase 2: Particles per cell (critical for fluid behavior)
+            ImGui::Text("Avg PPC (all cells): %.2f", g_params.avgParticlesPerCell);
+            ImGui::Text("Active PPC: %.2f", g_params.activePPC);
+            if (g_params.activePPC < 2.0f) {
+                ImGui::TextColored(ImVec4(1,0.3f,0.3f,1), "  WARNING: Low PPC = gravel!");
+            } else if (g_params.activePPC < 4.0f) {
+                ImGui::TextColored(ImVec4(1,0.8f,0.3f,1), "  OK, but more is better");
+            } else {
+                ImGui::TextColored(ImVec4(0.3f,1,0.3f,1), "  Good fluid density");
+            }
+            ImGui::Text("Active Cells: %d", g_params.activeCellCount);
+            
         ImGui::Separator();
+            ImGui::Text("Fluid State:");
+            ImGui::Text("  Max Density: %.1f kg/m³", g_params.maxDensity);
+            ImGui::Text("  Max Pressure: %.2f", g_params.maxPressure);
+            ImGui::Text("  Max Speed: %.2f m/s", g_params.maxLiquidSpeed);
+            ImGui::Text("  Actual dt: %.4f s", g_params.actualDt);
         
+            ImGui::Separator();
         ImGui::Text("Timing (ms):");
         ImGui::Text("  MPM:    %.2f", g_app.mpmTime);
         ImGui::Text("  Smoke:  %.2f", g_app.smokeTime);
         ImGui::Text("  Render: %.2f", g_app.renderTime);
+            ImGui::Text("Triangles: %zu", g_app.liquidRenderer.getTriangleCount());
+        }
+        
         ImGui::Separator();
         
-        // Playback controls
+        // ==================== PLAYBACK ====================
         if (ImGui::Button(g_app.running ? "Pause" : "Play")) {
             g_app.running = !g_app.running;
         }
@@ -389,10 +464,8 @@ void renderUI() {
             initSimulation(g_app.currentScene);
         }
         ImGui::SliderFloat("Time Scale", &g_app.timeScale, 0.1f, 2.0f);
-        ImGui::Separator();
         
         // Demo scenes
-        ImGui::Text("Demo Scenes:");
         const char* sceneNames[] = { "Falling Block", "Waterfall", "Boiling Cauldron", "Fan Test" };
         int currentScene = static_cast<int>(g_app.currentScene);
         if (ImGui::Combo("Scene", &currentScene, sceneNames, 4)) {
@@ -401,42 +474,162 @@ void renderUI() {
         }
         ImGui::Separator();
         
-        // Rendering options
-        ImGui::Text("Rendering:");
+        // ==================== MPM PARAMETERS ====================
+        if (ImGui::CollapsingHeader("MPM Simulation")) {
+            // Phase 1: Resolution Presets (for PPC control)
+            ImGui::Text("Iteration 3: Resolution (PPC control)");
+            int preset = static_cast<int>(g_params.fluidPreset);
+            if (ImGui::Combo("Grid Preset", &preset, "Coarse (48)\0Default (64)\0Fine (80)\0")) {
+                g_params.fluidPreset = static_cast<FluidPreset>(preset);
+                initSimulation(g_app.currentScene);
+            }
+            ImGui::SliderFloat("Spacing Factor", &g_params.particleSpacingFactor, 0.3f, 1.0f, "%.2f");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("spacing = dx * factor\n0.5 = ~8 PPC, 0.4 = ~16 PPC, 1.0 = ~1 PPC");
+            ImGui::Text("Particles: %d, Active PPC: %.1f", g_params.numLiquidParticles, g_params.activePPC);
+            
+            // Phase 2: FLIP/PIC (kill viscosity)
+            ImGui::Separator();
+            ImGui::Text("Phase 2: FLIP/PIC (viscosity)");
+            ImGui::SliderFloat("FLIP Ratio", &g_params.flipRatio, 0.90f, 0.99f, "%.2f");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("0.97 = water, 0.95 = slightly damped\n0.98 = very splashy");
+            
+            if (ImGui::Button("0.95")) g_params.flipRatio = 0.95f;
+            ImGui::SameLine();
+            if (ImGui::Button("0.97")) g_params.flipRatio = 0.97f;
+            ImGui::SameLine();
+            if (ImGui::Button("0.98")) g_params.flipRatio = 0.98f;
+            
+            // Phase 3: Stiffness (less squishy)
+            ImGui::Separator();
+            ImGui::Text("Phase 3: Stiffness (less bouncy)");
+            ImGui::SliderFloat("Stiffness K", &g_params.stiffnessK, 50.0f, 200.0f);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Higher = less squishy, more spread");
+            
+            if (ImGui::Button("50##k")) g_params.stiffnessK = 50.0f;
+            ImGui::SameLine();
+            if (ImGui::Button("100##k")) g_params.stiffnessK = 100.0f;
+            ImGui::SameLine();
+            if (ImGui::Button("150##k")) g_params.stiffnessK = 150.0f;
+            
+            ImGui::SliderFloat("Gravity", &g_params.gravity, -20.0f, 0.0f);
+            ImGui::SliderInt("Substeps", &g_app.substeps, 2, 8);
+            
+            // Round 6: Quality presets for performance vs fidelity
+            ImGui::Separator();
+            ImGui::Text("Quality Preset:");
+            if (ImGui::Button("Fast")) {
+                g_app.substeps = 2;
+                g_params.smoothingIterations = 1;
+                g_params.skipDiagnosticsEveryFrame = true;
+                g_params.diagnosticsInterval = 20;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Balanced")) {
+                g_app.substeps = 3;
+                g_params.smoothingIterations = 2;
+                g_params.skipDiagnosticsEveryFrame = true;
+                g_params.diagnosticsInterval = 10;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Quality")) {
+                g_app.substeps = 4;
+                g_params.smoothingIterations = 3;
+                g_params.skipDiagnosticsEveryFrame = false;
+            }
+            
+            // Viscosity: Should be OFF for water
+            ImGui::Separator();
+            ImGui::Text("Viscosity (OFF for water!):");
+            ImGui::Checkbox("Enable Grid Smoothing", &g_params.enableGridSmoothing);
+            if (g_params.enableGridSmoothing) {
+                ImGui::TextColored(ImVec4(1,0.5f,0.5f,1), "WARNING: This adds viscosity!");
+            }
+        }
+        
+        // ==================== PHASE 4: MESHING ====================
+        if (ImGui::CollapsingHeader("Meshing (Phase 4)")) {
+            ImGui::SliderFloat("Kernel Radius", &g_params.smoothingRadius, 1.5f, 4.0f);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("2.5 = default, higher = smoother");
+            ImGui::SliderInt("Smooth Iterations", &g_params.smoothingIterations, 1, 5);
+            ImGui::SliderFloat("Iso Threshold", &g_params.isoThreshold, 0.2f, 1.0f);
+            ImGui::SliderFloat("Anisotropy", &g_params.meshAnisotropy, 0.0f, 0.5f);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Stretch kernel along velocity (for waterfalls)");
+        }
+        
+        // ==================== COUPLING ====================
+        if (ImGui::CollapsingHeader("Coupling")) {
+            ImGui::Checkbox("Enable Coupling", &g_params.enableCoupling);
+            ImGui::Checkbox("Liquid -> Smoke", &g_app.coupling.liquidToSmoke);
+            ImGui::Checkbox("Smoke -> Liquid", &g_app.coupling.smokeToLiquid);
+            
+            ImGui::Separator();
+            ImGui::Text("Phase 1.1: Implicit Drag (stable)");
+            ImGui::SliderFloat("Drag Coeff (C)", &g_params.dragCoeff, 0.0f, 5.0f);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Strength of drag. Formula: v_new = (v + k*v_smoke)/(1+k)");
+            ImGui::SliderFloat("Max Drag Delta", &g_params.maxDragDelta, 1.0f, 20.0f);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Max velocity change per step (m/s)");
+            
+            ImGui::Separator();
+            ImGui::Text("Phase 5: Buoyancy (heavily reduced)");
+            ImGui::SliderFloat("Buoyancy Coeff", &g_params.buoyancyCoeff, 0.0f, 0.1f, "%.3f");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("0.01 = gentle surface bubbles only");
+            ImGui::SliderFloat("Max Buoy Accel", &g_params.buoyancyMaxAccel, 0.0f, 3.0f);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("%.2f g (keep < 0.2g)", g_params.buoyancyMaxAccel / 9.8f);
+            
+            ImGui::Separator();
+            ImGui::Text("Phase 1.2: Surface Detection");
+            ImGui::SliderInt("Neighbor Threshold", &g_params.surfaceNeighborThreshold, 5, 40);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Particles with fewer neighbors are 'surface'");
+            ImGui::Text("Surface particles: %d", g_params.surfaceParticleCount);
+            
+            ImGui::Separator();
+            ImGui::Text("Liquid -> Smoke:");
+            ImGui::SliderFloat("Spray Density", &g_params.sprayDensityGain, 0.0f, 20.0f);
+            ImGui::SliderFloat("Splash Threshold", &g_params.splashVelocityThreshold, 0.5f, 5.0f);
+        }
+        
+        // ==================== RENDERING ====================
+        if (ImGui::CollapsingHeader("Rendering")) {
         ImGui::Checkbox("Render Liquid", &g_app.renderLiquid);
         ImGui::Checkbox("Render Smoke", &g_app.renderSmoke);
         ImGui::Checkbox("Point Mode", &g_app.renderPoints);
         
         if (!g_app.renderPoints) {
-            ImGui::SliderFloat("Iso Level", &g_app.liquidRenderer.isoLevel, 0.1f, 2.0f);
+                ImGui::SliderFloat("Iso Level", &g_params.isoThreshold, 0.1f, 2.0f);
+                ImGui::SliderFloat("Smoothing Radius", &g_params.smoothingRadius, 1.0f, 5.0f);
+                ImGui::SliderInt("Smooth Iterations", &g_params.smoothingIterations, 0, 5);
         }
         ImGui::SliderFloat("Smoke Density", &g_app.smokeRenderer.densityScale, 1.0f, 50.0f);
         ImGui::SliderInt("Ray Steps", &g_app.smokeRenderer.raySteps, 16, 128);
-        ImGui::Separator();
+        }
         
-        // Simulation parameters
-        ImGui::Text("Simulation:");
-        ImGui::SliderFloat("Gravity", &g_app.mpm.gravity, -20.0f, 0.0f);
-        ImGui::SliderFloat("FLIP Ratio", &g_app.mpm.flipRatio, 0.0f, 1.0f);
-        ImGui::Separator();
+        // ==================== PERFORMANCE ====================
+        if (ImGui::CollapsingHeader("Performance")) {
+            if (ImGui::Checkbox("Performance Mode", &g_app.performanceMode)) {
+                if (g_app.performanceMode) {
+                    g_app.renderPoints = true;
+                    g_params.enableCohesion = false;
+                    g_params.enableSmokeSimulation = false;
+                }
+            }
+            if (ImGui::IsItemHovered()) {
+                ImGui::SetTooltip("Quick toggle for laptop-friendly settings");
+            }
+            ImGui::Checkbox("Surface Tension", &g_params.enableCohesion);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Expensive particle-particle forces");
+            ImGui::Checkbox("Smoke Simulation", &g_params.enableSmokeSimulation);
+        }
         
-        // Coupling
-        ImGui::Text("Coupling:");
-        ImGui::Checkbox("Enable Coupling", &g_app.coupling.enabled);
-        ImGui::Checkbox("Liquid -> Smoke", &g_app.coupling.liquidToSmoke);
-        ImGui::Checkbox("Smoke -> Liquid", &g_app.coupling.smokeToLiquid);
-        ImGui::SliderFloat("Drag", &g_app.coupling.dragCoefficient, 0.0f, 2.0f);
-        ImGui::SliderFloat("Buoyancy", &g_app.coupling.buoyancyCoefficient, 0.0f, 1.0f);
-        
         ImGui::Separator();
-        ImGui::Text("Controls:");
-        ImGui::Text("  LMB: Rotate camera");
-        ImGui::Text("  RMB: Pan camera");
-        ImGui::Text("  Scroll: Zoom");
-        ImGui::Text("  Space: Play/Pause");
-        ImGui::Text("  R: Reset");
-        ImGui::Text("  H: Toggle UI");
-        ImGui::Text("  1-4: Switch scenes");
+        if (ImGui::CollapsingHeader("Controls")) {
+            ImGui::Text("LMB: Rotate camera");
+            ImGui::Text("RMB: Pan camera");
+            ImGui::Text("Scroll: Zoom");
+            ImGui::Text("Space: Play/Pause");
+            ImGui::Text("R: Reset");
+            ImGui::Text("H: Toggle UI");
+            ImGui::Text("1-4: Switch scenes");
+        }
         
         ImGui::End();
     }
@@ -468,7 +661,7 @@ int main() {
     }
     
     glfwMakeContextCurrent(g_app.window);
-    glfwSwapInterval(1);  // VSync
+    glfwSwapInterval(0);  // Disable VSync for max FPS
     
     // Set callbacks
     glfwSetFramebufferSizeCallback(g_app.window, framebufferSizeCallback);

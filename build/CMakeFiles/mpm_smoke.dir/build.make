@@ -142,10 +142,24 @@ CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.cpp -o CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.s
 
+CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o: CMakeFiles/mpm_smoke.dir/flags.make
+CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp
+CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o: CMakeFiles/mpm_smoke.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o -MF CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o.d -o CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp
+
+CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp > CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.i
+
+CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp -o CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.s
+
 CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o: CMakeFiles/mpm_smoke.dir/flags.make
 CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.cpp
 CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o: CMakeFiles/mpm_smoke.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o -MF CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o.d -o CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.cpp
 
 CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.i: cmake_force
@@ -159,7 +173,7 @@ CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.s: cmake_force
 CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o: CMakeFiles/mpm_smoke.dir/flags.make
 CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/render/SmokeRenderer.cpp
 CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o: CMakeFiles/mpm_smoke.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o -MF CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o.d -o CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/SmokeRenderer.cpp
 
 CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.i: cmake_force
@@ -173,7 +187,7 @@ CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.s: cmake_force
 CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o: CMakeFiles/mpm_smoke.dir/flags.make
 CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Shader.cpp
 CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o: CMakeFiles/mpm_smoke.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o -MF CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o.d -o CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Shader.cpp
 
 CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.i: cmake_force
@@ -187,7 +201,7 @@ CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.s: cmake_force
 CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o: CMakeFiles/mpm_smoke.dir/flags.make
 CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Camera.cpp
 CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o: CMakeFiles/mpm_smoke.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o -MF CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o.d -o CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Camera.cpp
 
 CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.i: cmake_force
@@ -205,6 +219,7 @@ mpm_smoke_OBJECTS = \
 "CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o" \
 "CMakeFiles/mpm_smoke.dir/src/sim/Coupling.cpp.o" \
 "CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o" \
+"CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o" \
 "CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o" \
 "CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o" \
 "CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o" \
@@ -218,6 +233,7 @@ mpm_smoke: CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.o
 mpm_smoke: CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o
 mpm_smoke: CMakeFiles/mpm_smoke.dir/src/sim/Coupling.cpp.o
 mpm_smoke: CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o
+mpm_smoke: CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o
 mpm_smoke: CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o
 mpm_smoke: CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.o
 mpm_smoke: CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.o
@@ -231,7 +247,7 @@ mpm_smoke: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/
 mpm_smoke: _deps/glfw-build/src/libglfw3.a
 mpm_smoke: libglad.a
 mpm_smoke: CMakeFiles/mpm_smoke.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable mpm_smoke"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable mpm_smoke"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/mpm_smoke.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

@@ -965,4 +965,5 @@ CMakeFiles/mpm_smoke.dir/src/sim/Coupling.cpp.o: \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/default_searcher.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/not_fn.h \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/perfect_forward.h \
-  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.h
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.h \
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h

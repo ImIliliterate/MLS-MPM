@@ -467,3 +467,22 @@ float SmokeSim::sampleW(float x, float y, float z) const {
     return w.sample(x, y, z);
 }
 
+float SmokeSim::getMaxSpeed() const {
+    float maxSpeed = 0.0f;
+    
+    // Sample velocity at cell centers and find maximum
+    for (int k = 0; k < Nz; k++) {
+        for (int j = 0; j < Ny; j++) {
+            for (int i = 0; i < Nx; i++) {
+                float ux = (u(i, j, k) + u(i + 1, j, k)) * 0.5f;
+                float vy = (v(i, j, k) + v(i, j + 1, k)) * 0.5f;
+                float wz = (w(i, j, k) + w(i, j, k + 1)) * 0.5f;
+                float speed = std::sqrt(ux * ux + vy * vy + wz * wz);
+                maxSpeed = std::max(maxSpeed, speed);
+            }
+        }
+    }
+    
+    return maxSpeed;
+}
+

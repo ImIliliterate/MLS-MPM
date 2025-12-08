@@ -636,6 +636,30 @@ src/sim/SDF.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/mpm_smoke.dir/build.make CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.s
 .PHONY : src/sim/SDF.cpp.s
 
+src/sim/SimulationParams.o: src/sim/SimulationParams.cpp.o
+.PHONY : src/sim/SimulationParams.o
+
+# target to build an object file
+src/sim/SimulationParams.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mpm_smoke.dir/build.make CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o
+.PHONY : src/sim/SimulationParams.cpp.o
+
+src/sim/SimulationParams.i: src/sim/SimulationParams.cpp.i
+.PHONY : src/sim/SimulationParams.i
+
+# target to preprocess a source file
+src/sim/SimulationParams.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mpm_smoke.dir/build.make CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.i
+.PHONY : src/sim/SimulationParams.cpp.i
+
+src/sim/SimulationParams.s: src/sim/SimulationParams.cpp.s
+.PHONY : src/sim/SimulationParams.s
+
+# target to generate assembly for a file
+src/sim/SimulationParams.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/mpm_smoke.dir/build.make CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.s
+.PHONY : src/sim/SimulationParams.cpp.s
+
 src/sim/SmokeSim.o: src/sim/SmokeSim.cpp.o
 .PHONY : src/sim/SmokeSim.o
 
@@ -727,6 +751,9 @@ help:
 	@echo "... src/sim/SDF.o"
 	@echo "... src/sim/SDF.i"
 	@echo "... src/sim/SDF.s"
+	@echo "... src/sim/SimulationParams.o"
+	@echo "... src/sim/SimulationParams.i"
+	@echo "... src/sim/SimulationParams.s"
 	@echo "... src/sim/SmokeSim.o"
 	@echo "... src/sim/SmokeSim.i"
 	@echo "... src/sim/SmokeSim.s"

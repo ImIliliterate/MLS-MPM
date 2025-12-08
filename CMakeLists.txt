@@ -17,6 +17,12 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0")
 # Find packages
 find_package(OpenGL REQUIRED)
 
+# OpenMP for parallelization
+find_package(OpenMP)
+if(OpenMP_CXX_FOUND)
+    message(STATUS "OpenMP found - enabling parallel simulation")
+endif()
+
 # Option for CUDA support
 option(USE_CUDA "Enable CUDA support for GPU acceleration" OFF)
 if(USE_CUDA)
@@ -84,6 +90,7 @@ set(SIM_SOURCES
     src/sim/SmokeSim.cpp
     src/sim/Coupling.cpp
     src/sim/SDF.cpp
+    src/sim/SimulationParams.cpp
 )
 
 set(RENDER_SOURCES
@@ -115,6 +122,12 @@ target_link_libraries(mpm_smoke PRIVATE
     imgui
     OpenGL::GL
 )
+
+# Add OpenMP if available
+if(OpenMP_CXX_FOUND)
+    target_link_libraries(mpm_smoke PRIVATE OpenMP::OpenMP_CXX)
+    target_compile_definitions(mpm_smoke PRIVATE USE_OPENMP)
+endif()
 
 # CUDA sources if enabled
 if(USE_CUDA)

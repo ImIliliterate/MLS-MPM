@@ -2229,3 +2229,405 @@ events:
         
       exitCode: 0
 ...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:251 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:558 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:21 (find_package)"
+    description: "Detecting C OpenMP compiler info"
+    directories:
+      source: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-pRaA7J"
+      binary: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-pRaA7J"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: ""
+      CMAKE_OSX_SYSROOT: ""
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_C_Xclang fopenmp"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-pRaA7J'
+        
+        Run Build Command(s): /opt/homebrew/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_2bc30/fast
+        /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_2bc30.dir/build.make CMakeFiles/cmTC_2bc30.dir/build
+        Building C object CMakeFiles/cmTC_2bc30.dir/OpenMPTryFlag.c.o
+        /usr/bin/cc   -Xclang -fopenmp -arch arm64 -MD -MT CMakeFiles/cmTC_2bc30.dir/OpenMPTryFlag.c.o -MF CMakeFiles/cmTC_2bc30.dir/OpenMPTryFlag.c.o.d -o CMakeFiles/cmTC_2bc30.dir/OpenMPTryFlag.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-pRaA7J/OpenMPTryFlag.c
+        /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-pRaA7J/OpenMPTryFlag.c:2:10: fatal error: 'omp.h' file not found
+            2 | #include <omp.h>
+              |          ^~~~~~~
+        1 error generated.
+        make[1]: *** [CMakeFiles/cmTC_2bc30.dir/OpenMPTryFlag.c.o] Error 1
+        make: *** [cmTC_2bc30/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "find-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:343 (find_library)"
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:558 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:21 (find_package)"
+    mode: "library"
+    variable: "OpenMP_libomp_LIBRARY"
+    description: "Path to a library."
+    settings:
+      SearchFramework: "FIRST"
+      SearchAppBundle: "FIRST"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "omp"
+      - "gomp"
+      - "iomp5"
+    candidate_directories:
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/swift/"
+      - "/opt/homebrew/opt/openjdk@17/bin/"
+      - "/opt/homebrew/bin/"
+      - "/opt/homebrew/sbin/"
+      - "/usr/local/bin/"
+      - "/System/Cryptexes/App/usr/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/Library/Apple/usr/bin/"
+      - "/opt/anaconda3/bin/"
+      - "/opt/anaconda3/condabin/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/"
+      - "/opt/homebrew/lib/"
+      - "/opt/homebrew/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/opt/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/"
+      - "/Library/Frameworks/"
+      - "/System/Library/Frameworks/"
+    searched_directories:
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/swift/"
+      - "/opt/homebrew/opt/openjdk@17/bin/"
+      - "/opt/homebrew/bin/"
+      - "/opt/homebrew/sbin/"
+      - "/usr/local/bin/"
+      - "/System/Cryptexes/App/usr/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/Library/Apple/usr/bin/"
+      - "/opt/anaconda3/bin/"
+      - "/opt/anaconda3/condabin/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/"
+      - "/opt/homebrew/lib/"
+      - "/opt/homebrew/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/opt/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/"
+      - "/Library/Frameworks/"
+      - "/System/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/swift/"
+      - "/opt/homebrew/opt/openjdk@17/bin/"
+      - "/opt/homebrew/bin/"
+      - "/opt/homebrew/sbin/"
+      - "/usr/local/bin/"
+      - "/System/Cryptexes/App/usr/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/Library/Apple/usr/bin/"
+      - "/opt/anaconda3/bin/"
+      - "/opt/anaconda3/condabin/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/"
+      - "/opt/homebrew/lib/"
+      - "/opt/homebrew/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/opt/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/"
+      - "/Library/Frameworks/"
+      - "/System/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/swift/"
+      - "/opt/homebrew/opt/openjdk@17/bin/"
+      - "/opt/homebrew/bin/"
+      - "/opt/homebrew/sbin/"
+      - "/usr/local/bin/"
+      - "/System/Cryptexes/App/usr/bin/"
+      - "/usr/bin/"
+      - "/bin/"
+      - "/usr/sbin/"
+      - "/sbin/"
+      - "/Library/Apple/usr/bin/"
+      - "/opt/anaconda3/bin/"
+      - "/opt/anaconda3/condabin/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/"
+      - "/opt/homebrew/lib/"
+      - "/opt/homebrew/"
+      - "/usr/local/lib/"
+      - "/usr/local/"
+      - "/usr/lib/"
+      - "/usr/"
+      - "/opt/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks/"
+      - "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/"
+      - "/Library/Frameworks/"
+      - "/System/Library/Frameworks/"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "/opt/homebrew/opt/openjdk@17/bin"
+        - "/opt/homebrew/bin"
+        - "/opt/homebrew/sbin"
+        - "/usr/local/bin"
+        - "/System/Cryptexes/App/usr/bin"
+        - "/usr/bin"
+        - "/bin"
+        - "/usr/sbin"
+        - "/sbin"
+        - "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin"
+        - "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin"
+        - "/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin"
+        - "/Library/Apple/usr/bin"
+        - "/opt/homebrew/opt/openjdk@17/bin"
+        - "/opt/anaconda3/bin"
+        - "/opt/anaconda3/condabin"
+      CMAKE_INSTALL_PREFIX: "/usr/local"
+      CMAKE_SYSTEM_PREFIX_PATH:
+        - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr"
+        - "/opt/homebrew"
+        - "/usr/local"
+        - "/usr"
+        - "/"
+        - "/opt/homebrew"
+        - "/usr/local"
+        - "/usr/X11R6"
+        - "/usr/pkg"
+        - "/opt"
+        - "/sw"
+        - "/opt/local"
+      CMAKE_SYSTEM_LIBRARY_PATH:
+        - "/usr/lib/X11"
+      CMAKE_SYSTEM_FRAMEWORK_PATH:
+        - "~/Library/Frameworks"
+        - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/Library/Frameworks"
+        - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/Network/Library/Frameworks"
+        - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks"
+        - "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks"
+        - "/Applications/Xcode.app/Contents/Developer/Library/Frameworks"
+        - "/Library/Frameworks"
+        - "/Network/Library/Frameworks"
+        - "/System/Library/Frameworks"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:251 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:558 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:21 (find_package)"
+    description: "Detecting CXX OpenMP compiler info"
+    directories:
+      source: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-JQXp7R"
+      binary: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-JQXp7R"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g -O0"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: ""
+      CMAKE_OSX_SYSROOT: ""
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_CXX_Xclang fopenmp"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-JQXp7R'
+        
+        Run Build Command(s): /opt/homebrew/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_9bb35/fast
+        /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_9bb35.dir/build.make CMakeFiles/cmTC_9bb35.dir/build
+        Building CXX object CMakeFiles/cmTC_9bb35.dir/OpenMPTryFlag.cpp.o
+        /usr/bin/c++   -Xclang -fopenmp -std=gnu++17 -arch arm64 -MD -MT CMakeFiles/cmTC_9bb35.dir/OpenMPTryFlag.cpp.o -MF CMakeFiles/cmTC_9bb35.dir/OpenMPTryFlag.cpp.o.d -o CMakeFiles/cmTC_9bb35.dir/OpenMPTryFlag.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-JQXp7R/OpenMPTryFlag.cpp
+        /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-JQXp7R/OpenMPTryFlag.cpp:2:10: fatal error: 'omp.h' file not found
+            2 | #include <omp.h>
+              |          ^~~~~~~
+        1 error generated.
+        make[1]: *** [CMakeFiles/cmTC_9bb35.dir/OpenMPTryFlag.cpp.o] Error 1
+        make: *** [cmTC_9bb35/fast] Error 2
+        
+      exitCode: 2
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:251 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:558 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:21 (find_package)"
+    description: "Detecting C OpenMP compiler info"
+    directories:
+      source: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-Xavlru"
+      binary: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-Xavlru"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: ""
+      CMAKE_OSX_SYSROOT: ""
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_C_Xclang fopenmp"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-Xavlru'
+        
+        Run Build Command(s): /opt/homebrew/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_4c334/fast
+        /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_4c334.dir/build.make CMakeFiles/cmTC_4c334.dir/build
+        Building C object CMakeFiles/cmTC_4c334.dir/OpenMPTryFlag.c.o
+        /usr/bin/cc   -Xclang -fopenmp -arch arm64 -MD -MT CMakeFiles/cmTC_4c334.dir/OpenMPTryFlag.c.o -MF CMakeFiles/cmTC_4c334.dir/OpenMPTryFlag.c.o.d -o CMakeFiles/cmTC_4c334.dir/OpenMPTryFlag.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-Xavlru/OpenMPTryFlag.c
+        /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-Xavlru/OpenMPTryFlag.c:2:10: fatal error: 'omp.h' file not found
+            2 | #include <omp.h>
+              |          ^~~~~~~
+        1 error generated.
+        make[2]: *** [CMakeFiles/cmTC_4c334.dir/OpenMPTryFlag.c.o] Error 1
+        make[1]: *** [cmTC_4c334/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:251 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:558 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:21 (find_package)"
+    description: "Detecting CXX OpenMP compiler info"
+    directories:
+      source: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-tbNX3q"
+      binary: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-tbNX3q"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g -O0"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: ""
+      CMAKE_OSX_SYSROOT: ""
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_CXX_Xclang fopenmp"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-tbNX3q'
+        
+        Run Build Command(s): /opt/homebrew/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_945ad/fast
+        /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_945ad.dir/build.make CMakeFiles/cmTC_945ad.dir/build
+        Building CXX object CMakeFiles/cmTC_945ad.dir/OpenMPTryFlag.cpp.o
+        /usr/bin/c++   -Xclang -fopenmp -std=gnu++17 -arch arm64 -MD -MT CMakeFiles/cmTC_945ad.dir/OpenMPTryFlag.cpp.o -MF CMakeFiles/cmTC_945ad.dir/OpenMPTryFlag.cpp.o.d -o CMakeFiles/cmTC_945ad.dir/OpenMPTryFlag.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-tbNX3q/OpenMPTryFlag.cpp
+        /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-tbNX3q/OpenMPTryFlag.cpp:2:10: fatal error: 'omp.h' file not found
+            2 | #include <omp.h>
+              |          ^~~~~~~
+        1 error generated.
+        make[2]: *** [CMakeFiles/cmTC_945ad.dir/OpenMPTryFlag.cpp.o] Error 1
+        make[1]: *** [cmTC_945ad/fast] Error 2
+        
+      exitCode: 2
+...
+
+---
+events:
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:251 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:558 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:21 (find_package)"
+    description: "Detecting C OpenMP compiler info"
+    directories:
+      source: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-jmgZJW"
+      binary: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-jmgZJW"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_C_FLAGS_DEBUG: "-g"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: ""
+      CMAKE_OSX_SYSROOT: ""
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_C_Xclang fopenmp"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-jmgZJW'
+        
+        Run Build Command(s): /opt/homebrew/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_ca50a/fast
+        /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_ca50a.dir/build.make CMakeFiles/cmTC_ca50a.dir/build
+        Building C object CMakeFiles/cmTC_ca50a.dir/OpenMPTryFlag.c.o
+        /usr/bin/cc   -Xclang -fopenmp -arch arm64 -MD -MT CMakeFiles/cmTC_ca50a.dir/OpenMPTryFlag.c.o -MF CMakeFiles/cmTC_ca50a.dir/OpenMPTryFlag.c.o.d -o CMakeFiles/cmTC_ca50a.dir/OpenMPTryFlag.c.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-jmgZJW/OpenMPTryFlag.c
+        /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-jmgZJW/OpenMPTryFlag.c:2:10: fatal error: 'omp.h' file not found
+            2 | #include <omp.h>
+              |          ^~~~~~~
+        1 error generated.
+        make[1]: *** [CMakeFiles/cmTC_ca50a.dir/OpenMPTryFlag.c.o] Error 1
+        make: *** [cmTC_ca50a/fast] Error 2
+        
+      exitCode: 2
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:251 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/FindOpenMP.cmake:558 (_OPENMP_GET_FLAGS)"
+      - "CMakeLists.txt:21 (find_package)"
+    description: "Detecting CXX OpenMP compiler info"
+    directories:
+      source: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-m4OolD"
+      binary: "/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-m4OolD"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g -O0"
+      CMAKE_EXE_LINKER_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: ""
+      CMAKE_OSX_SYSROOT: ""
+    buildResult:
+      variable: "OpenMP_COMPILE_RESULT_CXX_Xclang fopenmp"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-m4OolD'
+        
+        Run Build Command(s): /opt/homebrew/bin/cmake -E env VERBOSE=1 /usr/bin/make -f Makefile cmTC_77dd6/fast
+        /Applications/Xcode.app/Contents/Developer/usr/bin/make  -f CMakeFiles/cmTC_77dd6.dir/build.make CMakeFiles/cmTC_77dd6.dir/build
+        Building CXX object CMakeFiles/cmTC_77dd6.dir/OpenMPTryFlag.cpp.o
+        /usr/bin/c++   -Xclang -fopenmp -std=gnu++17 -arch arm64 -MD -MT CMakeFiles/cmTC_77dd6.dir/OpenMPTryFlag.cpp.o -MF CMakeFiles/cmTC_77dd6.dir/OpenMPTryFlag.cpp.o.d -o CMakeFiles/cmTC_77dd6.dir/OpenMPTryFlag.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-m4OolD/OpenMPTryFlag.cpp
+        /Users/suaz/Documents/GitHub/MLS-MPM/build/CMakeFiles/CMakeScratch/TryCompile-m4OolD/OpenMPTryFlag.cpp:2:10: fatal error: 'omp.h' file not found
+            2 | #include <omp.h>
+              |          ^~~~~~~
+        1 error generated.
+        make[1]: *** [CMakeFiles/cmTC_77dd6.dir/OpenMPTryFlag.cpp.o] Error 1
+        make: *** [cmTC_77dd6/fast] Error 2
+        
+      exitCode: 2
+...

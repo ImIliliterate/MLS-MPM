@@ -79,6 +79,12 @@
 },
 {
   "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
+  "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp",
+  "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp",
+  "output": "CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o"
+},
+{
+  "directory": "/Users/suaz/Documents/GitHub/MLS-MPM/build",
   "command": "/usr/bin/c++ -DGLFW_INCLUDE_NONE -I/Users/suaz/Documents/GitHub/MLS-MPM/src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glfw-src/include -I/Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src -I/Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/imgui-src/backends -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks -O3 -march=native -std=gnu++17 -arch arm64 -o CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o -c /Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.cpp",
   "file": "/Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.cpp",
   "output": "CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o"

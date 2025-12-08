@@ -15,6 +15,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.o.d"
   "CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o"
   "CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o.d"
+  "CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o"
+  "CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o.d"
   "CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o"
   "CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o.d"
   "mpm_smoke"

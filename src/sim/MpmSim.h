@@ -6,12 +6,18 @@
 
 /**
  * Grid node for MPM simulation
- * Stores mass, velocity, and momentum for each grid cell
+ * Stores mass, velocity, momentum, and fluid pressure for each grid cell
+ * 
+ * Round 3: Added density and pressure for continuum fluid behavior
  */
 struct GridNode {
     float mass = 0.0f;
     glm::vec3 vel{0.0f};
     glm::vec3 velNew{0.0f};  // For FLIP/PIC blending
+    
+    // Phase 1: Fluid pressure fields
+    float density = 0.0f;    // Computed from mass / cell volume
+    float pressure = 0.0f;   // Computed from equation of state
 };
 
 /**
@@ -50,10 +56,11 @@ public:
     
     // Simulation parameters
     float gravity = -9.8f;
-    float flipRatio = 0.0f;  // Blend between FLIP (1.0) and PIC (0.0) - using pure PIC for stability
+    float flipRatio = 0.95f;  // Higher = more fluid, splashy motion
+    bool enableCohesion = true;  // Surface tension (expensive, disable for performance)
     
-    // Material presets
-    static constexpr float WATER_E = 1000.0f;
+    // Material presets - softer for cohesive fluid behavior
+    static constexpr float WATER_E = 1500.0f;
     static constexpr float WATER_NU = 0.3f;
     
     // Storage
@@ -79,6 +86,20 @@ public:
     // Main simulation step
     void step(float dt);
     
+    // Compute adaptive timestep based on CFL condition
+    float computeAdaptiveDt() const;
+    
+    // Update diagnostic values (max speed, particle counts, etc.)
+    void computeDiagnostics();
+    
+    // Phase 2.3: Jacobi smoothing on grid velocities to reduce clumping
+    void smoothGridVelocities();
+    
+    // Round 3 Phase 1: Pressure-based fluid forces
+    void computeGridDensity();      // 1.2: Compute density from mass
+    void computeGridPressure();     // 1.3: Equation of state
+    void applyPressureForces(float dt);  // 1.4: Pressure gradient forces
+    
     // Access particles for rendering
     const std::vector<Particle>& getParticles() const { return particles; }
     const std::vector<GridNode>& getGrid() const { return grid; }
@@ -99,6 +120,9 @@ private:
     void particleToGrid(float dt);
     void applyGridForcesAndBCs(float dt);
     void gridToParticle(float dt);
+    
+    // Surface tension / cohesion
+    void applyCohesionForces(float dt);
     
     // Grid indexing
     int gridIndex(int i, int j, int k) const;

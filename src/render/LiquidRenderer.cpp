@@ -1,4 +1,5 @@
 #include "LiquidRenderer.h"
+#include "../sim/SimulationParams.h"
 #include <glm/gtc/type_ptr.hpp>
 #include <algorithm>
 #include <cmath>
@@ -32,7 +33,7 @@ void LiquidRenderer::cleanup() {
 }
 
 bool LiquidRenderer::initPointRendering() {
-    // Simple point shader
+    // Improved point shader with sphere-like shading
     const char* vertSrc = R"(
         #version 330 core
         layout(location = 0) in vec3 aPos;
@@ -40,26 +41,60 @@ bool LiquidRenderer::initPointRendering() {
         uniform mat4 uView;
         uniform mat4 uProj;
         uniform float uPointSize;
+        uniform vec3 uCameraPos;
+        
+        out vec3 vWorldPos;
+        out float vDepth;
         
         void main() {
-            gl_Position = uProj * uView * vec4(aPos, 1.0);
-            gl_PointSize = uPointSize;
+            vWorldPos = aPos;
+            vec4 viewPos = uView * vec4(aPos, 1.0);
+            vDepth = -viewPos.z;
+            gl_Position = uProj * viewPos;
+            // Scale point size based on distance for consistent apparent size
+            gl_PointSize = uPointSize * (1.0 / (0.5 + vDepth * 0.3));
         }
     )";
     
     const char* fragSrc = R"(
         #version 330 core
+        in vec3 vWorldPos;
+        in float vDepth;
         out vec4 FragColor;
         
         uniform vec3 uColor;
+        uniform vec3 uLightDir;
+        uniform vec3 uCameraPos;
         
         void main() {
+            // Create sphere-like appearance
             vec2 coord = gl_PointCoord * 2.0 - 1.0;
             float r2 = dot(coord, coord);
             if (r2 > 1.0) discard;
             
-            float alpha = 1.0 - r2;
-            FragColor = vec4(uColor, alpha);
+            // Compute sphere normal
+            float z = sqrt(1.0 - r2);
+            vec3 normal = normalize(vec3(coord.x, -coord.y, z));
+            
+            // Lighting
+            vec3 lightDir = normalize(-uLightDir);
+            float diff = max(dot(normal, lightDir), 0.0);
+            float ambient = 0.3;
+            
+            // Fresnel rim lighting
+            vec3 viewDir = vec3(0.0, 0.0, 1.0);
+            float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 3.0);
+            
+            // Specular
+            vec3 halfDir = normalize(lightDir + viewDir);
+            float spec = pow(max(dot(normal, halfDir), 0.0), 64.0);
+            
+            vec3 color = uColor * (ambient + diff * 0.6) + vec3(1.0) * spec * 0.4 + vec3(0.4, 0.6, 1.0) * fresnel * 0.3;
+            
+            // Soft edge
+            float alpha = smoothstep(1.0, 0.8, r2);
+            
+            FragColor = vec4(color, alpha * 0.9);
         }
     )";
     
@@ -82,7 +117,7 @@ bool LiquidRenderer::initPointRendering() {
 }
 
 bool LiquidRenderer::initMeshRendering() {
-    // Phong-style mesh shader
+    // Water-like mesh shader with improved lighting
     const char* vertSrc = R"(
         #version 330 core
         layout(location = 0) in vec3 aPos;
@@ -94,12 +129,15 @@ bool LiquidRenderer::initMeshRendering() {
         
         out vec3 vWorldPos;
         out vec3 vNormal;
+        out vec3 vViewPos;
         
         void main() {
             vec4 worldPos = uModel * vec4(aPos, 1.0);
             vWorldPos = worldPos.xyz;
             vNormal = mat3(transpose(inverse(uModel))) * aNormal;
-            gl_Position = uProj * uView * worldPos;
+            vec4 viewPos = uView * worldPos;
+            vViewPos = viewPos.xyz;
+            gl_Position = uProj * viewPos;
         }
     )";
     
@@ -107,6 +145,7 @@ bool LiquidRenderer::initMeshRendering() {
         #version 330 core
         in vec3 vWorldPos;
         in vec3 vNormal;
+        in vec3 vViewPos;
         
         out vec4 FragColor;
         
@@ -208,12 +247,15 @@ void LiquidRenderer::render(const glm::mat4& view, const glm::mat4& projection,
         glEnable(GL_PROGRAM_POINT_SIZE);
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable(GL_DEPTH_TEST);
         
         pointShader.use();
         pointShader.setMat4("uView", view);
         pointShader.setMat4("uProj", projection);
         pointShader.setFloat("uPointSize", pointSize);
         pointShader.setVec3("uColor", pointColor);
+        pointShader.setVec3("uCameraPos", cameraPos);
+        pointShader.setVec3("uLightDir", lightDir);
         
         glBindVertexArray(pointVAO);
         glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(particleCount));
@@ -246,50 +288,134 @@ void LiquidRenderer::render(const glm::mat4& view, const glm::mat4& projection,
 }
 
 void LiquidRenderer::buildScalarField(const MpmSim& sim) {
-    // Build a scalar field from particles
+    /**
+     * Round 6 OPTIMIZED: Build scalar field with early bounds clamping
+     * 
+     * Optimizations:
+     * - Pre-clamp loop bounds to avoid inner loop bounds checking
+     * - Skip anisotropy computation when disabled
+     * - Flatten array index computation
+     */
     fieldNx = sim.Nx;
     fieldNy = sim.Ny;
     fieldNz = sim.Nz;
     fieldDx = sim.dx;
     fieldMin = sim.worldMin;
     
+    // Use memset for faster zeroing
     scalarField.assign(fieldNx * fieldNy * fieldNz, 0.0f);
     
     float invDx = 1.0f / fieldDx;
-    float kernelRadius = 2.0f * fieldDx;
+    float kernelRadius = g_params.smoothingRadius * fieldDx;
     float kernelRadius2 = kernelRadius * kernelRadius;
+    float h9 = std::pow(kernelRadius, 9);
+    float poly6Coeff = 315.0f / (64.0f * 3.14159265f * h9);
+    float anisotropy = g_params.meshAnisotropy;
+    bool useAnisotropy = anisotropy > 0.01f;
     
-    // Accumulate particle contributions
+    int range = static_cast<int>(std::ceil(g_params.smoothingRadius)) + 1;
+    int strideY = fieldNx;
+    int strideZ = fieldNx * fieldNy;
+    
     for (const auto& p : sim.particles) {
         glm::vec3 gridPos = (p.x - fieldMin) * invDx;
         int baseI = static_cast<int>(gridPos.x);
         int baseJ = static_cast<int>(gridPos.y);
         int baseK = static_cast<int>(gridPos.z);
         
-        // Contribute to nearby cells
-        int range = 2;
-        for (int di = -range; di <= range; di++) {
-            for (int dj = -range; dj <= range; dj++) {
-                for (int dk = -range; dk <= range; dk++) {
-                    int i = baseI + di;
-                    int j = baseJ + dj;
-                    int k = baseK + dk;
+        // Round 6: Pre-clamp loop bounds to avoid inner checks
+        int iMin = std::max(0, baseI - range);
+        int iMax = std::min(fieldNx - 1, baseI + range);
+        int jMin = std::max(0, baseJ - range);
+        int jMax = std::min(fieldNy - 1, baseJ + range);
+        int kMin = std::max(0, baseK - range);
+        int kMax = std::min(fieldNz - 1, baseK + range);
+        
+        // Precompute velocity direction if using anisotropy
+        float speed = 0.0f;
+        glm::vec3 velDir(0.0f);
+        if (useAnisotropy) {
+            speed = glm::length(p.v);
+            if (speed > 0.1f) {
+                velDir = p.v / speed;
+            }
+        }
+        
+        for (int k = kMin; k <= kMax; k++) {
+            float cz = fieldMin.z + (k + 0.5f) * fieldDx;
+            float dz = p.x.z - cz;
+            int idxK = k * strideZ;
+            
+            for (int j = jMin; j <= jMax; j++) {
+                float cy = fieldMin.y + (j + 0.5f) * fieldDx;
+                float dy = p.x.y - cy;
+                int idxJK = j * strideY + idxK;
+                
+                for (int i = iMin; i <= iMax; i++) {
+                    float cx = fieldMin.x + (i + 0.5f) * fieldDx;
+                    float dx_diff = p.x.x - cx;
                     
-                    if (i < 0 || i >= fieldNx || j < 0 || j >= fieldNy || k < 0 || k >= fieldNz)
-                        continue;
-                    
-                    glm::vec3 cellCenter = fieldMin + (glm::vec3(i, j, k) + 0.5f) * fieldDx;
-                    glm::vec3 diff = p.x - cellCenter;
-                    float dist2 = glm::dot(diff, diff);
+                    float dist2;
+                    if (useAnisotropy && speed > 0.1f) {
+                        glm::vec3 diff(dx_diff, dy, dz);
+                        float alongVel = glm::dot(diff, velDir);
+                        glm::vec3 perp = diff - alongVel * velDir;
+                        float shrunk = alongVel * (1.0f - anisotropy);
+                        dist2 = shrunk * shrunk + glm::dot(perp, perp);
+                    } else {
+                        dist2 = dx_diff * dx_diff + dy * dy + dz * dz;
+                    }
                     
                     if (dist2 < kernelRadius2) {
-                        // Smooth kernel
-                        float r = std::sqrt(dist2) / kernelRadius;
-                        float w = (1.0f - r) * (1.0f - r) * (1.0f - r);
-                        scalarField[i + fieldNx * (j + fieldNy * k)] += w;
+                        float term = kernelRadius2 - dist2;
+                        float w = poly6Coeff * term * term * term;
+                        scalarField[i + idxJK] += w * p.mass;
                     }
                 }
             }
+        }
+    }
+    
+    /**
+     * Phase 3.2: Laplacian smoothing on scalar field
+     * This reduces "bag of marbles" / "metaball blobby" artifacts
+     * by smoothing the density field before meshing.
+     * 
+     * True Laplacian: phi_new[i] = (phi[i] + sum(phi[neighbors])) / (1 + neighborCount)
+     */
+    int numIterations = g_params.smoothingIterations;
+    if (numIterations > 0) {
+        std::vector<float> smoothed(scalarField.size());
+        
+        for (int iter = 0; iter < numIterations; iter++) {
+            // Copy boundary cells
+            for (size_t idx = 0; idx < scalarField.size(); idx++) {
+                smoothed[idx] = scalarField[idx];
+            }
+            
+            // Apply Laplacian smoothing to interior cells
+            for (int k = 1; k < fieldNz - 1; k++) {
+                for (int j = 1; j < fieldNy - 1; j++) {
+                    for (int i = 1; i < fieldNx - 1; i++) {
+                        int idx = i + fieldNx * (j + fieldNy * k);
+                        
+                        // 6-connected neighbors
+                        float sum = scalarField[idx];  // Include self
+                        sum += scalarField[idx - 1];   // -x
+                        sum += scalarField[idx + 1];   // +x
+                        sum += scalarField[idx - fieldNx];  // -y
+                        sum += scalarField[idx + fieldNx];  // +y
+                        sum += scalarField[idx - fieldNx * fieldNy];  // -z
+                        sum += scalarField[idx + fieldNx * fieldNy];  // +z
+                        
+                        // Laplacian average: (self + 6 neighbors) / 7
+                        smoothed[idx] = sum / 7.0f;
+                    }
+                }
+            }
+            
+            // Swap buffers
+            std::swap(scalarField, smoothed);
         }
     }
 }

@@ -998,6 +998,7 @@ CMakeFiles/mpm_smoke.dir/src/main.cpp.o: \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/Coupling.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.h \
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Camera.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Shader.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.h \

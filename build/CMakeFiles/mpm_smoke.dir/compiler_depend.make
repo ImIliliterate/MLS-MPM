@@ -1024,6 +1024,7 @@ CMakeFiles/mpm_smoke.dir/src/main.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/sr
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/Coupling.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.h \
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.h
 
 CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Camera.cpp \
@@ -2967,6 +2968,7 @@ CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o: /Users/suaz/Documents/
   _deps/glm-src/glm/vector_relational.hpp \
   /Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include/glad/glad.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h \
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Shader.h
 
@@ -6139,6 +6141,7 @@ CMakeFiles/mpm_smoke.dir/src/sim/Coupling.cpp.o: /Users/suaz/Documents/GitHub/ML
   _deps/glm-src/glm/vector_relational.hpp \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/Coupling.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h \
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.h
 
 CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.cpp \
@@ -7121,7 +7124,8 @@ CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.o: /Users/suaz/Documents/GitHub/MLS-
   _deps/glm-src/glm/vec3.hpp \
   _deps/glm-src/glm/vec4.hpp \
   _deps/glm-src/glm/vector_relational.hpp \
-  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h \
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h
 
 CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.cpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/Availability.h \
@@ -8088,6 +8092,9 @@ CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM
   _deps/glm-src/glm/vec4.hpp \
   _deps/glm-src/glm/vector_relational.hpp \
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.h
+
+CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp \
+  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h
 
 CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o: /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.cpp \
   /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/Availability.h \
@@ -9056,6 +9063,8 @@ CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o: /Users/suaz/Documents/GitHub/ML
   /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.h
 
 
+/Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp:
+
 /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.cpp:
 
 /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/Coupling.cpp:
@@ -9123,6 +9132,8 @@ _deps/glm-src/glm/ext/quaternion_geometric.hpp:
 /Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.cpp:
 
 /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Camera.cpp:
+
+/Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h:
 
 /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.h:
 

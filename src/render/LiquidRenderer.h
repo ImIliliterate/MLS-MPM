@@ -24,14 +24,14 @@ public:
     RenderMode mode = RenderMode::Points;
     
     // Point rendering parameters
-    float pointSize = 5.0f;
-    glm::vec3 pointColor{0.2f, 0.5f, 0.9f};
+    float pointSize = 4.0f;
+    glm::vec3 pointColor{0.15f, 0.45f, 0.85f};  // Nice water blue
     
     // Mesh rendering parameters
-    float isoLevel = 0.5f;
-    glm::vec3 meshColor{0.1f, 0.4f, 0.8f};
-    float shininess = 64.0f;
-    float fresnel = 0.5f;
+    float isoLevel = 0.5f;  // Adjust based on particle density
+    glm::vec3 meshColor{0.1f, 0.35f, 0.7f};  // Deeper water blue
+    float shininess = 128.0f;  // Higher for sharper highlights
+    float fresnel = 0.7f;  // More rim lighting for watery look
     
     LiquidRenderer();
     ~LiquidRenderer();

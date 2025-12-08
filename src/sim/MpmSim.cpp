@@ -1,7 +1,14 @@
 #include "MpmSim.h"
+#include "SimulationParams.h"
 #include <algorithm>
 #include <cmath>
+#include <cstring>
 #include <iostream>
+#include <unordered_map>
+
+#ifdef USE_OPENMP
+#include <omp.h>
+#endif
 
 MpmSim::MpmSim() {
     dx = (worldMax.x - worldMin.x) / static_cast<float>(Nx);
@@ -39,8 +46,8 @@ void MpmSim::addBox(const glm::vec3& min, const glm::vec3& max, const glm::vec3&
                 p.volume0 = volume;
                 p.F = glm::mat3(1.0f);
                 p.C = glm::mat3(0.0f);
-                p.E = WATER_E;
-                p.nu = WATER_NU;
+                p.E = g_params.bulkModulus;
+                p.nu = g_params.poissonRatio;
                 particles.push_back(p);
             }
         }
@@ -66,8 +73,8 @@ void MpmSim::addSphere(const glm::vec3& center, float radius, const glm::vec3& v
                     p.volume0 = volume;
                     p.F = glm::mat3(1.0f);
                     p.C = glm::mat3(0.0f);
-                    p.E = WATER_E;
-                    p.nu = WATER_NU;
+                    p.E = g_params.bulkModulus;
+                    p.nu = g_params.poissonRatio;
                     particles.push_back(p);
                 }
             }
@@ -75,12 +82,138 @@ void MpmSim::addSphere(const glm::vec3& center, float radius, const glm::vec3& v
     }
 }
 
+float MpmSim::computeAdaptiveDt() const {
+    if (!g_params.adaptiveDt) {
+        return g_params.dt;
+    }
+    
+    float h = (worldMax.x - worldMin.x) / static_cast<float>(Nx);  // cell size
+    float maxV = g_params.maxLiquidSpeed;
+    
+    float dtCfl = (maxV > 1e-6f) ? g_params.cflNumber * h / maxV : g_params.maxDt;
+    return std::min(g_params.maxDt, dtCfl);
+}
+
+void MpmSim::computeDiagnostics() {
+    // Compute max liquid speed
+    float maxSpeed = 0.0f;
+    for (const auto& p : particles) {
+        float speed = glm::length(p.v);
+        maxSpeed = std::max(maxSpeed, speed);
+    }
+    g_params.maxLiquidSpeed = maxSpeed;
+    
+    // Particle stats
+    g_params.numLiquidParticles = static_cast<int>(particles.size());
+    int totalCells = Nx * Ny * Nz;
+    g_params.avgParticlesPerCell = static_cast<float>(particles.size()) / static_cast<float>(totalCells);
+}
+
 void MpmSim::step(float dt) {
     impactPositions.clear();
+    g_params.frameCount++;
+    
+    // Round 6: Only compute full diagnostics every N frames
+    bool fullDiagnostics = !g_params.skipDiagnosticsEveryFrame || 
+                           (g_params.frameCount % g_params.diagnosticsInterval == 0);
+    if (fullDiagnostics) {
+        computeDiagnostics();
+    }
+    
+    // Compute adaptive timestep
+    float adaptDt = computeAdaptiveDt();
+    g_params.actualDt = adaptDt;
+    
+    // Apply cohesion/surface tension forces (expensive, can be disabled)
+    if (enableCohesion) {
+        applyCohesionForces(adaptDt);
+    }
+    
     clearGrid();
-    particleToGrid(dt);
-    applyGridForcesAndBCs(dt);
-    gridToParticle(dt);
+    particleToGrid(adaptDt);
+    
+    // Round 3: Compute fluid pressure and apply pressure gradient forces
+    if (g_params.enablePressure) {
+        computeGridDensity();
+        computeGridPressure();
+        applyPressureForces(adaptDt);
+    }
+    
+    // Optional grid velocity smoothing (disabled for water)
+    if (g_params.enableGridSmoothing) {
+        smoothGridVelocities();
+    }
+    
+    applyGridForcesAndBCs(adaptDt);
+    gridToParticle(adaptDt);
+}
+
+void MpmSim::smoothGridVelocities() {
+    /**
+     * Phase 1.5 / 2.3: Jacobi smoothing on grid velocities (viscosity)
+     * 
+     * A tiny amount of grid-space viscosity can kill "grape clumps"
+     * without making it soup. Use viscosityBlend to control amount.
+     */
+    
+    std::vector<glm::vec3> smoothed(grid.size());
+    float blend = g_params.viscosityBlend;  // How much to blend toward smoothed
+    
+    for (int iter = 0; iter < g_params.gridSmoothingIterations; iter++) {
+        // Compute smoothed velocities
+        for (int k = 0; k < Nz; k++) {
+            for (int j = 0; j < Ny; j++) {
+                for (int i = 0; i < Nx; i++) {
+                    int idx = gridIndex(i, j, k);
+                    
+                    // Skip empty cells
+                    if (grid[idx].mass < 1e-6f) {
+                        smoothed[idx] = grid[idx].vel;
+                        continue;
+                    }
+                    
+                    // Average with neighbors (only non-empty)
+                    glm::vec3 sum = grid[idx].vel;
+                    int count = 1;
+                    
+                    // 6-connected neighbors
+                    const int neighbors[6][3] = {
+                        {-1, 0, 0}, {1, 0, 0},
+                        {0, -1, 0}, {0, 1, 0},
+                        {0, 0, -1}, {0, 0, 1}
+                    };
+                    
+                    for (int n = 0; n < 6; n++) {
+                        int ni = i + neighbors[n][0];
+                        int nj = j + neighbors[n][1];
+                        int nk = k + neighbors[n][2];
+                        
+                        if (isValidCell(ni, nj, nk)) {
+                            int nidx = gridIndex(ni, nj, nk);
+                            if (grid[nidx].mass > 1e-6f) {
+                                sum += grid[nidx].vel;
+                                count++;
+                            }
+                        }
+                    }
+                    
+                    glm::vec3 avgVel = sum / static_cast<float>(count);
+                    // Blend: grid.vel = mix(original, smoothed, viscosityBlend)
+                    smoothed[idx] = glm::mix(grid[idx].vel, avgVel, blend);
+                }
+            }
+        }
+        
+        // Copy back to grid
+        for (int k = 0; k < Nz; k++) {
+            for (int j = 0; j < Ny; j++) {
+                for (int i = 0; i < Nx; i++) {
+                    int idx = gridIndex(i, j, k);
+                    grid[idx].vel = smoothed[idx];
+                }
+            }
+        }
+    }
 }
 
 glm::vec3 MpmSim::gridToWorld(int i, int j, int k) const {
@@ -113,15 +246,145 @@ void MpmSim::applyExternalForce(const glm::vec3& pos, const glm::vec3& force, fl
 }
 
 void MpmSim::clearGrid() {
-    for (auto& node : grid) {
-        node.mass = 0.0f;
-        node.vel = glm::vec3(0.0f);
-        node.velNew = glm::vec3(0.0f);
+    // Round 6: Use memset for faster zeroing (GridNode is POD-like)
+    std::memset(grid.data(), 0, grid.size() * sizeof(GridNode));
+}
+
+// ==================== Round 3: Pressure-based Fluid Forces ====================
+// Round 6: Combined density + pressure computation for better cache efficiency
+
+void MpmSim::computeGridDensity() {
+    /**
+     * Round 6 OPTIMIZED: Compute density per cell from mass
+     * Combined with pressure computation in computeGridPressure for efficiency
+     */
+    float cellVolume = dx * dx * dx;
+    float invCellVolume = 1.0f / cellVolume;
+    int activeCells = 0;
+    float maxDens = 0.0f;
+    
+    // Only compute detailed diagnostics every N frames
+    bool computeStats = !g_params.skipDiagnosticsEveryFrame || 
+                        (g_params.frameCount % g_params.diagnosticsInterval == 0);
+    
+    int gridSize = Nx * Ny * Nz;
+    #ifdef USE_OPENMP
+    #pragma omp parallel for reduction(+:activeCells) reduction(max:maxDens)
+    #endif
+    for (int idx = 0; idx < gridSize; idx++) {
+        float mass = grid[idx].mass;
+        if (mass > 0.0f) {
+            grid[idx].density = mass * invCellVolume;
+            if (computeStats) {
+                maxDens = std::max(maxDens, grid[idx].density);
+                activeCells++;
+            }
+        } else {
+            grid[idx].density = 0.0f;
+        }
+    }
+    
+    // Update diagnostics only when computed
+    if (computeStats) {
+        g_params.activeCellCount = activeCells;
+        g_params.maxDensity = maxDens;
+        if (activeCells > 0) {
+            g_params.activePPC = static_cast<float>(particles.size()) / static_cast<float>(activeCells);
+        }
+    }
+}
+
+void MpmSim::computeGridPressure() {
+    /**
+     * Round 6 OPTIMIZED: Compute pressure from equation of state
+     * Uses flat array iteration for better cache performance
+     */
+    float rho0 = g_params.restDensity;
+    float K = g_params.stiffnessK;
+    float invRho0 = 1.0f / rho0;
+    float maxPress = 0.0f;
+    
+    bool computeStats = !g_params.skipDiagnosticsEveryFrame || 
+                        (g_params.frameCount % g_params.diagnosticsInterval == 0);
+    
+    int gridSize = Nx * Ny * Nz;
+    #ifdef USE_OPENMP
+    #pragma omp parallel for reduction(max:maxPress)
+    #endif
+    for (int idx = 0; idx < gridSize; idx++) {
+        float rho = grid[idx].density;
+        
+        if (rho > 0.0f) {
+            float compression = (rho - rho0) * invRho0;
+            float p = K * std::max(0.0f, compression);
+            grid[idx].pressure = p;
+            if (computeStats) {
+                maxPress = std::max(maxPress, p);
+            }
+        } else {
+            grid[idx].pressure = 0.0f;
+        }
+    }
+    
+    if (computeStats) {
+        g_params.maxPressure = maxPress;
+    }
+}
+
+void MpmSim::applyPressureForces(float dt) {
+    /**
+     * Phase 1.4: Apply pressure forces as grid velocity changes
+     * 
+     * Acceleration: a = -∇p / ρ
+     * 
+     * Uses central difference for pressure gradient
+     */
+    float invTwoDx = 1.0f / (2.0f * dx);
+    
+    #ifdef USE_OPENMP
+    #pragma omp parallel for collapse(3)
+    #endif
+    for (int k = 1; k < Nz - 1; k++) {
+        for (int j = 1; j < Ny - 1; j++) {
+            for (int i = 1; i < Nx - 1; i++) {
+                int idx = gridIndex(i, j, k);
+                
+                // Skip cells with no density
+                if (grid[idx].density <= 0.0f) continue;
+                
+                // Get neighbor pressures
+                float pL = grid[gridIndex(i - 1, j, k)].pressure;
+                float pR = grid[gridIndex(i + 1, j, k)].pressure;
+                float pD = grid[gridIndex(i, j - 1, k)].pressure;
+                float pU = grid[gridIndex(i, j + 1, k)].pressure;
+                float pB = grid[gridIndex(i, j, k - 1)].pressure;
+                float pF = grid[gridIndex(i, j, k + 1)].pressure;
+                
+                // Central difference gradient
+                glm::vec3 gradP;
+                gradP.x = (pR - pL) * invTwoDx;
+                gradP.y = (pU - pD) * invTwoDx;
+                gradP.z = (pF - pB) * invTwoDx;
+                
+                // Acceleration: a = -∇p / ρ
+                float rho = grid[idx].density;
+                glm::vec3 accel = -gradP / (rho + 1e-6f);
+                
+                // Apply to grid velocity
+                grid[idx].vel += accel * dt;
+            }
+        }
     }
 }
 
 void MpmSim::particleToGrid(float dt) {
     float invDx = 1.0f / dx;
+    
+    // Store old grid velocities for FLIP
+    std::vector<glm::vec3> oldGridVel(grid.size());
+    for (size_t i = 0; i < grid.size(); i++) {
+        oldGridVel[i] = grid[i].vel;
+    }
     
     for (auto& p : particles) {
         // Find base cell
@@ -135,14 +398,13 @@ void MpmSim::particleToGrid(float dt) {
         w[1] = 0.75f - glm::pow(fx - 1.0f, glm::vec3(2.0f));
         w[2] = 0.5f * glm::pow(fx - 0.5f, glm::vec3(2.0f));
         
-        // Compute stress contribution (Neo-Hookean for fluid-like behavior)
+        // Compute stress contribution
         glm::mat3 stress = computeStress(p);
         
         // MLS-MPM: equation (29) from Hu et al.
-        // Compute affine momentum contribution
-        // NOTE: Simplified to just stress term for stability (remove APIC momentum for now)
-        glm::mat3 affine = -dt * 4.0f * invDx * invDx * p.volume0 * stress;
-        // glm::mat3 affine = -dt * 4.0f * invDx * invDx * p.volume0 * stress + p.mass * p.C;
+        // APIC contribution controlled by params
+        float apicBlend = g_params.apicBlend;
+        glm::mat3 affine = -dt * 4.0f * invDx * invDx * p.volume0 * stress + p.mass * p.C * apicBlend;
         
         // Scatter to 3x3x3 neighborhood
         for (int i = 0; i < 3; i++) {
@@ -165,11 +427,13 @@ void MpmSim::particleToGrid(float dt) {
         }
     }
     
-    // Normalize velocities by mass
-    for (auto& node : grid) {
-        if (node.mass > 1e-6f) {
-            node.vel /= node.mass;
+    // Normalize velocities by mass and store old velocity
+    for (size_t i = 0; i < grid.size(); i++) {
+        if (grid[i].mass > 1e-6f) {
+            grid[i].vel /= grid[i].mass;
         }
+        // Store pre-force velocity for FLIP
+        oldGridVel[i] = grid[i].vel;
     }
 }
 
@@ -183,8 +447,8 @@ void MpmSim::applyGridForcesAndBCs(float dt) {
                 
                 if (node.mass <= 1e-6f) continue;
                 
-                // Apply gravity
-                node.vel.y += dt * gravity;
+                // Apply gravity (use params)
+                node.vel.y += dt * g_params.gravity;
                 
                 // Boundary conditions (walls)
                 glm::vec3 worldPos = gridToWorld(i, j, k);
@@ -244,8 +508,16 @@ void MpmSim::applyGridForcesAndBCs(float dt) {
 
 void MpmSim::gridToParticle(float dt) {
     float invDx = 1.0f / dx;
+    float flipAlpha = g_params.flipRatio;
+    int numParticles = static_cast<int>(particles.size());
     
-    for (auto& p : particles) {
+    // Thread-local storage for impact positions
+    #ifdef USE_OPENMP
+    std::vector<std::vector<glm::vec3>> threadImpacts(omp_get_max_threads());
+    #pragma omp parallel for schedule(static)
+    #endif
+    for (int pi = 0; pi < numParticles; pi++) {
+        Particle& p = particles[pi];
         glm::vec3 oldVel = p.v;
         
         // Find base cell
@@ -253,19 +525,16 @@ void MpmSim::gridToParticle(float dt) {
         glm::ivec3 base = glm::ivec3(cellPos - 0.5f);
         glm::vec3 fx = cellPos - glm::vec3(base);
         
-        // Quadratic B-spline weights and derivatives
-        glm::vec3 w[3], dw[3];
+        // Quadratic B-spline weights
+        glm::vec3 w[3];
         w[0] = 0.5f * glm::pow(1.5f - fx, glm::vec3(2.0f));
         w[1] = 0.75f - glm::pow(fx - 1.0f, glm::vec3(2.0f));
         w[2] = 0.5f * glm::pow(fx - 0.5f, glm::vec3(2.0f));
         
-        dw[0] = fx - 1.5f;
-        dw[1] = -2.0f * (fx - 1.0f);
-        dw[2] = fx - 0.5f;
-        
-        // Gather velocity and velocity gradient from grid
+        // Gather velocity and affine field from grid
         glm::vec3 velPIC(0.0f);
-        glm::mat3 B(0.0f);  // Affine velocity field
+        glm::vec3 velOld(0.0f);
+        glm::mat3 B(0.0f);
         
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -280,42 +549,59 @@ void MpmSim::gridToParticle(float dt) {
                     glm::vec3 dpos = (glm::vec3(i, j, k) - fx) * dx;
                     
                     int idx = gridIndex(gi, gj, gk);
-                    glm::vec3 gridVel = grid[idx].velNew;
+                    glm::vec3 gridVelNew = grid[idx].velNew;
+                    glm::vec3 gridVelOld = grid[idx].vel;
                     
-                    velPIC += weight * gridVel;
-                    
-                    // APIC: compute affine velocity field
-                    B += weight * glm::outerProduct(gridVel, dpos);
+                    velPIC += weight * gridVelNew;
+                    velOld += weight * gridVelOld;
+                    B += weight * glm::outerProduct(gridVelNew, dpos);
                 }
             }
         }
         
-        // APIC: C = B * D^-1, where D = (1/4) * dx^2 * I for quadratic B-splines
+        // APIC: C = B * D^-1
         p.C = B * (4.0f * invDx * invDx);
         
         // FLIP/PIC blend
-        glm::vec3 velFLIP = p.v + (velPIC - oldVel);
-        p.v = flipRatio * velFLIP + (1.0f - flipRatio) * velPIC;
+        glm::vec3 dv_flip = velPIC - velOld;
+        glm::vec3 velFLIP = p.v + dv_flip;
+        p.v = flipAlpha * velFLIP + (1.0f - flipAlpha) * velPIC;
         
-        // Detect high-speed impacts
+        // Detect high-speed impacts (thread-safe)
         float speedChange = glm::length(p.v - oldVel);
         if (speedChange > 2.0f && p.x.y < worldMin.y + 0.1f) {
+            #ifdef USE_OPENMP
+            threadImpacts[omp_get_thread_num()].push_back(p.x);
+            #else
             impactPositions.push_back(p.x);
+            #endif
         }
         
         // Update position
         p.x += dt * p.v;
         
-        // Update deformation gradient (disabled for pure fluid - just track volume change)
-        // For now, keep F = I to avoid numerical instability
-        // glm::mat3 gradV = p.C;
-        // p.F = (glm::mat3(1.0f) + dt * gradV) * p.F;
-        p.F = glm::mat3(1.0f);  // Reset to identity for incompressible fluid
+        // Update deformation gradient
+        glm::mat3 gradV = p.C;
+        p.F = (glm::mat3(1.0f) + dt * gradV) * p.F;
         
-        // Clamp to world bounds (safety)
+        // For fluid: reset F to preserve volume ratio
+        float J = glm::determinant(p.F);
+        J = glm::clamp(J, 0.6f, 1.5f);
+        J = glm::mix(J, 1.0f, 0.01f);
+        float cbrtJ = std::cbrt(J);
+        p.F = glm::mat3(cbrtJ);
+        
+        // Clamp to world bounds
         float margin = 2.0f * dx;
         p.x = glm::clamp(p.x, worldMin + margin, worldMax - margin);
     }
+    
+    // Merge thread-local impacts
+    #ifdef USE_OPENMP
+    for (const auto& ti : threadImpacts) {
+        impactPositions.insert(impactPositions.end(), ti.begin(), ti.end());
+    }
+    #endif
 }
 
 int MpmSim::gridIndex(int i, int j, int k) const {
@@ -327,7 +613,6 @@ bool MpmSim::isValidCell(int i, int j, int k) const {
 }
 
 float MpmSim::N(float x) const {
-    // Quadratic B-spline
     x = std::abs(x);
     if (x < 0.5f) {
         return 0.75f - x * x;
@@ -338,7 +623,6 @@ float MpmSim::N(float x) const {
 }
 
 float MpmSim::dN(float x) const {
-    // Derivative of quadratic B-spline
     float sign = (x >= 0.0f) ? 1.0f : -1.0f;
     x = std::abs(x);
     if (x < 0.5f) {
@@ -349,31 +633,136 @@ float MpmSim::dN(float x) const {
     return 0.0f;
 }
 
+void MpmSim::applyCohesionForces(float dt) {
+    const float h = dx * 2.5f;
+    const float h2 = h * h;
+    const float cohesionStrength = 800.0f;
+    
+    std::unordered_map<int64_t, std::vector<int>> spatialHash;
+    auto hashPos = [&](const glm::vec3& pos) -> int64_t {
+        int cx = static_cast<int>(std::floor(pos.x / h));
+        int cy = static_cast<int>(std::floor(pos.y / h));
+        int cz = static_cast<int>(std::floor(pos.z / h));
+        return (static_cast<int64_t>(cx) * 73856093) ^
+               (static_cast<int64_t>(cy) * 19349663) ^
+               (static_cast<int64_t>(cz) * 83492791);
+    };
+    
+    for (int i = 0; i < static_cast<int>(particles.size()); i++) {
+        spatialHash[hashPos(particles[i].x)].push_back(i);
+    }
+    
+    std::vector<float> densities(particles.size(), 0.0f);
+    for (int i = 0; i < static_cast<int>(particles.size()); i++) {
+        const auto& pi = particles[i];
+        int cx = static_cast<int>(std::floor(pi.x.x / h));
+        int cy = static_cast<int>(std::floor(pi.x.y / h));
+        int cz = static_cast<int>(std::floor(pi.x.z / h));
+        
+        float density = 0.0f;
+        
+        for (int di = -1; di <= 1; di++) {
+            for (int dj = -1; dj <= 1; dj++) {
+                for (int dk = -1; dk <= 1; dk++) {
+                    int64_t hash = (static_cast<int64_t>(cx + di) * 73856093) ^
+                                   (static_cast<int64_t>(cy + dj) * 19349663) ^
+                                   (static_cast<int64_t>(cz + dk) * 83492791);
+                    
+                    auto it = spatialHash.find(hash);
+                    if (it == spatialHash.end()) continue;
+                    
+                    for (int j : it->second) {
+                        glm::vec3 diff = pi.x - particles[j].x;
+                        float r2 = glm::dot(diff, diff);
+                        if (r2 < h2) {
+                            float w = (h2 - r2);
+                            density += particles[j].mass * w * w * w;
+                        }
+                    }
+                }
+            }
+        }
+        
+        float poly6Coeff = 315.0f / (64.0f * 3.14159265f * std::pow(h, 9));
+        densities[i] = density * poly6Coeff;
+    }
+    
+    for (int i = 0; i < static_cast<int>(particles.size()); i++) {
+        auto& pi = particles[i];
+        int cx = static_cast<int>(std::floor(pi.x.x / h));
+        int cy = static_cast<int>(std::floor(pi.x.y / h));
+        int cz = static_cast<int>(std::floor(pi.x.z / h));
+        
+        glm::vec3 cohesionForce(0.0f);
+        glm::vec3 normal(0.0f);
+        
+        for (int di = -1; di <= 1; di++) {
+            for (int dj = -1; dj <= 1; dj++) {
+                for (int dk = -1; dk <= 1; dk++) {
+                    int64_t hash = (static_cast<int64_t>(cx + di) * 73856093) ^
+                                   (static_cast<int64_t>(cy + dj) * 19349663) ^
+                                   (static_cast<int64_t>(cz + dk) * 83492791);
+                    
+                    auto it = spatialHash.find(hash);
+                    if (it == spatialHash.end()) continue;
+                    
+                    for (int j : it->second) {
+                        if (i == j) continue;
+                        
+                        glm::vec3 diff = pi.x - particles[j].x;
+                        float r2 = glm::dot(diff, diff);
+                        
+                        if (r2 < h2 && r2 > 1e-10f) {
+                            float r = std::sqrt(r2);
+                            glm::vec3 dir = diff / r;
+                            
+                            float q = r / h;
+                            if (q < 1.0f) {
+                                float cohesionKernel = 0.0f;
+                                if (q < 0.5f) {
+                                    cohesionKernel = 2.0f * std::pow(1.0f - q, 3) * q * q * q - 1.0f / 64.0f;
+                                } else {
+                                    cohesionKernel = std::pow(1.0f - q, 3) * q * q * q;
+                                }
+                                cohesionForce -= cohesionStrength * particles[j].mass * cohesionKernel * dir;
+                            }
+                            
+                            float w = (h2 - r2) * (h2 - r2);
+                            normal += particles[j].mass * w * dir / (densities[j] + 1e-6f);
+                        }
+                    }
+                }
+            }
+        }
+        
+        float normalLen = glm::length(normal);
+        if (normalLen > 0.1f) {
+            cohesionForce -= 50.0f * normal;
+        }
+        
+        pi.v += dt * cohesionForce / pi.mass;
+        
+        float speed = glm::length(pi.v);
+        if (speed > 10.0f) {
+            pi.v *= 10.0f / speed;
+        }
+    }
+}
+
 glm::mat3 MpmSim::computeStress(const Particle& p) const {
-    // Neo-Hookean model for fluid-like behavior
     float E = p.E;
     float nu = p.nu;
     
-    // Lame parameters
     float mu = E / (2.0f * (1.0f + nu));
     float lambda = E * nu / ((1.0f + nu) * (1.0f - 2.0f * nu));
     
-    // For liquid: only use pressure (bulk modulus)
-    // P = -p * I where p = -K * (J - 1)
-    // K = lambda + 2/3 * mu (bulk modulus)
-    
     float J = glm::determinant(p.F);
-    
-    // Clamp J to prevent instability
     J = std::max(J, 0.1f);
     
-    // Pressure (equation of state for weakly compressible fluid)
     float bulkModulus = lambda + 2.0f * mu / 3.0f;
     float pressure = bulkModulus * (J - 1.0f);
     
-    // Cauchy stress (just pressure for fluid)
     glm::mat3 stress = -pressure * glm::mat3(1.0f);
     
     return stress;
 }
-

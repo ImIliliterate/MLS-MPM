@@ -150,6 +150,9 @@ public:
     // Get density data for rendering
     const std::vector<float>& getDensityData() const { return density.data; }
     
+    // Get max speed for diagnostics
+    float getMaxSpeed() const;
+    
 private:
     // Stable Fluids steps
     void addForces(float dt);

@@ -1025,6 +1025,7 @@ CMakeFiles/mpm_smoke.dir/src/main.cpp.o
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/Coupling.h
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.h
+ /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.h
 
 CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.o
@@ -2970,6 +2971,7 @@ CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.o
  /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src/glm/vector_relational.hpp
  /Users/suaz/Documents/GitHub/MLS-MPM/external/glad/include/glad/glad.h
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h
+ /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h
  /Users/suaz/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.h
  /Users/suaz/Documents/GitHub/MLS-MPM/src/render/Shader.h
 
@@ -6145,6 +6147,7 @@ CMakeFiles/mpm_smoke.dir/src/sim/Coupling.cpp.o
  /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src/glm/vector_relational.hpp
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/Coupling.h
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h
+ /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.h
 
 CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.o
@@ -7129,6 +7132,7 @@ CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.o
  /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src/glm/vec4.hpp
  /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src/glm/vector_relational.hpp
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/MpmSim.h
+ /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h
 
 CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.cpp
@@ -8096,6 +8100,10 @@ CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.o
  /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src/glm/vec4.hpp
  /Users/suaz/Documents/GitHub/MLS-MPM/build/_deps/glm-src/glm/vector_relational.hpp
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SDF.h
+
+CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.o
+ /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp
+ /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.h
 
 CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.o
  /Users/suaz/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.cpp
