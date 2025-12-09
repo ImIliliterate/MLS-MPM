@@ -2,8 +2,17 @@
 #include <algorithm>
 #include <cmath>
 
+#ifdef USE_CUDA
+#include "../gpu/smoke_cuda.h"
+#include <cuda_runtime.h>
+#endif
+
 SmokeSim::SmokeSim() {
     dx = (worldMax.x - worldMin.x) / static_cast<float>(Nx);
+}
+
+SmokeSim::~SmokeSim() {
+    cleanupGPU();
 }
 
 void SmokeSim::init(int nx, int ny, int nz) {
@@ -36,6 +45,24 @@ void SmokeSim::init(int nx, int ny, int nz) {
     reset();
 }
 
+void SmokeSim::initGPU() {
+#ifdef USE_CUDA
+    if (!gpuInitialized && useGPU) {
+        initSmokeCuda(Nx, Ny, Nz);
+        gpuInitialized = true;
+    }
+#endif
+}
+
+void SmokeSim::cleanupGPU() {
+#ifdef USE_CUDA
+    if (gpuInitialized) {
+        cleanupSmokeCuda();
+        gpuInitialized = false;
+    }
+#endif
+}
+
 void SmokeSim::reset() {
     u.fill(0.0f);
     v.fill(0.0f);
@@ -44,9 +71,32 @@ void SmokeSim::reset() {
     temperature.fill(ambientTemperature);
     pressure.fill(0.0f);
     liquidMask.fill(0);
+    
+#ifdef USE_CUDA
+    if (gpuInitialized) {
+        resetSmokeCuda(ambientTemperature);
+    }
+#endif
 }
 
 void SmokeSim::step(float dt) {
+#ifdef USE_CUDA
+    if (useGPU && gpuInitialized) {
+        // GPU path - call CUDA kernels
+        smokeCudaStep(
+            dt, dx,
+            buoyancyAlpha, buoyancyBeta, ambientTemperature,
+            dissipation, tempDissipation,
+            pressureIterations
+        );
+        
+        // Download density for rendering (only needed if rendering smoke)
+        smokeCudaDownloadDensity(density.data.data());
+        return;
+    }
+#endif
+    
+    // CPU path
     addForces(dt);
     advectVelocity(dt);
     // diffuseVelocity(dt);  // Optional, can be slow
@@ -56,6 +106,15 @@ void SmokeSim::step(float dt) {
 }
 
 void SmokeSim::addDensity(const glm::vec3& worldPos, float amount, float radius) {
+#ifdef USE_CUDA
+    if (useGPU && gpuInitialized) {
+        float3 wmin = make_float3(worldMin.x, worldMin.y, worldMin.z);
+        float3 pos = make_float3(worldPos.x, worldPos.y, worldPos.z);
+        smokeCudaAddDensity(wmin, dx, pos, amount, radius);
+        return;
+    }
+#endif
+    
     glm::vec3 gridPos = worldToGrid(worldPos);
     int r = static_cast<int>(std::ceil(radius / dx));
     
@@ -158,6 +217,18 @@ void SmokeSim::addVelocity(const glm::vec3& worldPos, const glm::vec3& vel, floa
             }
         }
     }
+}
+
+void SmokeSim::fillDensity(float value) {
+    // Fill entire density grid with uniform value (for "fog chamber" effect)
+    density.fill(value);
+    
+#ifdef USE_CUDA
+    if (useGPU && gpuInitialized) {
+        // Fill GPU density grid
+        smokeCudaFillDensity(value);
+    }
+#endif
 }
 
 void SmokeSim::setLiquidMask(const std::vector<glm::vec3>& particlePositions, float particleRadius) {

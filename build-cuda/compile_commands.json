@@ -1,0 +1,218 @@
+[
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /FoCMakeFiles\\imgui.dir\\_deps\\imgui-src\\imgui.cpp.obj /FdCMakeFiles\\imgui.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\imgui.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-src/imgui.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/imgui.dir/_deps/imgui-src/imgui.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /FoCMakeFiles\\imgui.dir\\_deps\\imgui-src\\imgui_demo.cpp.obj /FdCMakeFiles\\imgui.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\imgui_demo.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-src/imgui_demo.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/imgui.dir/_deps/imgui-src/imgui_demo.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /FoCMakeFiles\\imgui.dir\\_deps\\imgui-src\\imgui_draw.cpp.obj /FdCMakeFiles\\imgui.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\imgui_draw.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-src/imgui_draw.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/imgui.dir/_deps/imgui-src/imgui_draw.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /FoCMakeFiles\\imgui.dir\\_deps\\imgui-src\\imgui_tables.cpp.obj /FdCMakeFiles\\imgui.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\imgui_tables.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-src/imgui_tables.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/imgui.dir/_deps/imgui-src/imgui_tables.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /FoCMakeFiles\\imgui.dir\\_deps\\imgui-src\\imgui_widgets.cpp.obj /FdCMakeFiles\\imgui.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\imgui_widgets.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-src/imgui_widgets.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/imgui.dir/_deps/imgui-src/imgui_widgets.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /FoCMakeFiles\\imgui.dir\\_deps\\imgui-src\\backends\\imgui_impl_glfw.cpp.obj /FdCMakeFiles\\imgui.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends\\imgui_impl_glfw.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-src/backends/imgui_impl_glfw.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/imgui.dir/_deps/imgui-src/backends/imgui_impl_glfw.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /FoCMakeFiles\\imgui.dir\\_deps\\imgui-src\\backends\\imgui_impl_opengl3.cpp.obj /FdCMakeFiles\\imgui.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends\\imgui_impl_opengl3.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-src/backends/imgui_impl_opengl3.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/imgui.dir/_deps/imgui-src/backends/imgui_impl_opengl3.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /FoCMakeFiles\\glad.dir\\external\\glad\\src\\glad.c.obj /FdCMakeFiles\\glad.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\src\\glad.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/external/glad/src/glad.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/glad.dir/external/glad/src/glad.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\main.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\main.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/main.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/main.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\sim\\MpmSim.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\sim\\MpmSim.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/sim/MpmSim.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/sim/MpmSim.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\sim\\SmokeSim.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\sim\\SmokeSim.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/sim/SmokeSim.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/sim/SmokeSim.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\sim\\Coupling.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\sim\\Coupling.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/sim/Coupling.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/sim/Coupling.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\sim\\SDF.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\sim\\SDF.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/sim/SDF.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/sim/SDF.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\sim\\SimulationParams.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\sim\\SimulationParams.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/sim/SimulationParams.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/sim/SimulationParams.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\render\\LiquidRenderer.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\render\\LiquidRenderer.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/render/LiquidRenderer.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/render/LiquidRenderer.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\render\\SmokeRenderer.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\render\\SmokeRenderer.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/render/SmokeRenderer.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/render/SmokeRenderer.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\render\\Shader.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\render\\Shader.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/render/Shader.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/render/Shader.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -external:I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -external:W0 /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /openmp:llvm -openmp /FoCMakeFiles\\mpm_smoke.dir\\src\\render\\Camera.cpp.obj /FdCMakeFiles\\mpm_smoke.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\render\\Camera.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/render/Camera.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/render/Camera.cpp.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.4\\bin\\nvcc.exe -forward-unknown-to-host-compiler -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -isystem \"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -D_WINDOWS -Xcompiler=\" /EHsc\" -Xcompiler=\" -Zi -Ob0 -Od /RTC1\" -std=c++14 \"--generate-code=arch=compute_89,code=[compute_89,sm_89]\" -Xcompiler=-MDd -Xcompiler=/openmp:llvm -x cu -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\gpu\\mpm_kernels.cu -o CMakeFiles\\mpm_smoke.dir\\src\\gpu\\mpm_kernels.cu.obj -Xcompiler=-FdCMakeFiles\\mpm_smoke.dir\\,-FS",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/gpu/mpm_kernels.cu",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/gpu/mpm_kernels.cu.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~1\\NVIDIA~2\\CUDA\\v12.4\\bin\\nvcc.exe -forward-unknown-to-host-compiler -DGLFW_INCLUDE_NONE -DUSE_CUDA -DUSE_OPENMP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\external\\glad\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\imgui-src\\backends -isystem \"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v12.4\\include\" -D_WINDOWS -Xcompiler=\" /EHsc\" -Xcompiler=\" -Zi -Ob0 -Od /RTC1\" -std=c++14 \"--generate-code=arch=compute_89,code=[compute_89,sm_89]\" -Xcompiler=-MDd -Xcompiler=/openmp:llvm -x cu -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\src\\gpu\\smoke_kernels.cu -o CMakeFiles\\mpm_smoke.dir\\src\\gpu\\smoke_kernels.cu.obj -Xcompiler=-FdCMakeFiles\\mpm_smoke.dir\\,-FS",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/src/gpu/smoke_kernels.cu",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/CMakeFiles/mpm_smoke.dir/src/gpu/smoke_kernels.cu.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\context.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\context.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/context.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/context.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\init.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\init.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/init.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/init.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\input.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\input.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/input.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/input.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\monitor.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\monitor.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/monitor.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/monitor.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\vulkan.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\vulkan.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/vulkan.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/vulkan.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\window.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\window.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/window.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/window.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\win32_init.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\win32_init.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/win32_init.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_init.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\win32_joystick.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\win32_joystick.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/win32_joystick.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_joystick.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\win32_monitor.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\win32_monitor.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/win32_monitor.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_monitor.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\win32_time.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\win32_time.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/win32_time.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_time.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\win32_thread.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\win32_thread.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/win32_thread.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_thread.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\win32_window.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\win32_window.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/win32_window.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/win32_window.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\wgl_context.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\wgl_context.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/wgl_context.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/wgl_context.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\egl_context.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\egl_context.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/egl_context.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/egl_context.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo -DUNICODE -D_CRT_SECURE_NO_WARNINGS -D_GLFW_USE_CONFIG_H -D_UNICODE -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\include -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-build\\src /DWIN32 /D_WINDOWS /Zi /Ob0 /Od /RTC1 -MDd /W3 /Fo_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\osmesa_context.c.obj /Fd_deps\\glfw-build\\src\\CMakeFiles\\glfw.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glfw-src\\src\\osmesa_context.c",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-src/src/osmesa_context.c",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/CMakeFiles/glfw.dir/osmesa_context.c.obj"
+},
+{
+  "directory": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2022\\BUILDT~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP -IC:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src /DWIN32 /D_WINDOWS /EHsc -g -O0 -std:c++17 -MDd /Za /fp:precise /Fo_deps\\glm-build\\glm\\CMakeFiles\\glm.dir\\detail\\glm.cpp.obj /Fd_deps\\glm-build\\glm\\CMakeFiles\\glm.dir\\ /FS -c C:\\Users\\a2dsu\\OneDrive\\Documents\\GitHub\\MLS-MPM\\build-cuda\\_deps\\glm-src\\glm\\detail\\glm.cpp",
+  "file": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glm-src/glm/detail/glm.cpp",
+  "output": "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glm-build/glm/CMakeFiles/glm.dir/detail/glm.cpp.obj"
+}
+]

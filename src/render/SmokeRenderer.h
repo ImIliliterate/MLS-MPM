@@ -16,13 +16,13 @@
 class SmokeRenderer {
 public:
     // Rendering parameters
-    int raySteps = 64;                      // Ray-marching steps
-    float densityScale = 10.0f;             // Density multiplier
-    float absorptionCoeff = 0.5f;           // Absorption coefficient
-    glm::vec3 smokeColor{0.9f, 0.9f, 0.95f}; // Base smoke color
+    int raySteps = 12;                      // Ray-marching steps (minimal for perf)
+    float densityScale = 25.0f;             // Density multiplier - boosted for visibility
+    float absorptionCoeff = 0.8f;           // Absorption coefficient - more opaque
+    glm::vec3 smokeColor{0.85f, 0.88f, 0.95f}; // Slightly blue-tinted smoke
     glm::vec3 lightColor{1.0f, 0.95f, 0.9f}; // Light color
-    float shadowSteps = 8;                   // Shadow ray steps
-    float shadowDensity = 0.3f;             // Shadow density multiplier
+    float shadowSteps = 4;                   // Shadow ray steps (reduced for perf)
+    float shadowDensity = 0.4f;             // Shadow density multiplier
     
     SmokeRenderer();
     ~SmokeRenderer();

@@ -4,6 +4,19 @@
 #include <vector>
 #include <functional>
 
+#ifdef USE_CUDA
+// Forward declarations for CUDA functions
+void mpmCudaInit(int maxParticles, int Nx, int Ny, int Nz);
+void mpmCudaCleanup();
+void mpmCudaUploadParticles(const std::vector<struct Particle>& particles);
+void mpmCudaStep(int numParticles, int Nx, int Ny, int Nz, float dx, float dt,
+                 float apicBlend, float flipRatio, float gravity,
+                 const glm::vec3& worldMin, const glm::vec3& worldMax);
+void mpmCudaDownloadPositions(std::vector<glm::vec3>& positions, int numParticles);
+void mpmCudaDownloadParticles(std::vector<struct Particle>& particles);
+int mpmCudaGetParticleCount();
+#endif
+
 /**
  * Grid node for MPM simulation
  * Stores mass, velocity, momentum, and fluid pressure for each grid cell
@@ -92,6 +105,9 @@ public:
     // Update diagnostic values (max speed, particle counts, etc.)
     void computeDiagnostics();
     
+    // Log resolution statistics (PPC, dx, etc.)
+    void logResolutionStats() const;
+    
     // Phase 2.3: Jacobi smoothing on grid velocities to reduce clumping
     void smoothGridVelocities();
     
@@ -103,6 +119,18 @@ public:
     // Access particles for rendering
     const std::vector<Particle>& getParticles() const { return particles; }
     const std::vector<GridNode>& getGrid() const { return grid; }
+    
+    // GPU support: get positions for rendering (downloads from GPU if USE_CUDA)
+    void getPositionsForRendering(std::vector<glm::vec3>& positions) const;
+    
+    // GPU support: download full particles for mesh generation (expensive!)
+    void syncParticlesToCpu();
+    
+    // GPU support: upload particles to GPU after adding them
+    void uploadToGpu();
+    
+    // GPU support: check if running on GPU
+    bool isGpuEnabled() const;
     
     // Get world-space grid positions
     glm::vec3 gridToWorld(int i, int j, int k) const;
@@ -137,5 +165,9 @@ private:
     
     // Track impacts for coupling
     std::vector<glm::vec3> impactPositions;
+    
+    // GPU state
+    bool gpuInitialized = false;
+    mutable std::vector<glm::vec3> gpuPositionCache;  // Cached positions from GPU
 };
 

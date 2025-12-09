@@ -1,6 +1,8 @@
 #include "LiquidRenderer.h"
 #include "../sim/SimulationParams.h"
+#include <glad/glad.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_inverse.hpp>
 #include <algorithm>
 #include <cmath>
 #include <unordered_map>
@@ -21,6 +23,7 @@ LiquidRenderer::~LiquidRenderer() {
 bool LiquidRenderer::init() {
     if (!initPointRendering()) return false;
     if (!initMeshRendering()) return false;
+    if (!initSSFR()) return false;  // GPU-accelerated fluid rendering
     return true;
 }
 
@@ -30,71 +33,33 @@ void LiquidRenderer::cleanup() {
     if (meshVAO) { glDeleteVertexArrays(1, &meshVAO); meshVAO = 0; }
     if (meshVBO) { glDeleteBuffers(1, &meshVBO); meshVBO = 0; }
     if (meshEBO) { glDeleteBuffers(1, &meshEBO); meshEBO = 0; }
+    // SSFR cleanup disabled
 }
 
+// SSFR cleanup and resize are defined later in the file (in #if 1 block)
+
 bool LiquidRenderer::initPointRendering() {
-    // Improved point shader with sphere-like shading
+    // DEBUG: Simple 2-pixel dots colored by velocity
     const char* vertSrc = R"(
         #version 330 core
         layout(location = 0) in vec3 aPos;
         
         uniform mat4 uView;
         uniform mat4 uProj;
-        uniform float uPointSize;
-        uniform vec3 uCameraPos;
-        
-        out vec3 vWorldPos;
-        out float vDepth;
         
         void main() {
-            vWorldPos = aPos;
-            vec4 viewPos = uView * vec4(aPos, 1.0);
-            vDepth = -viewPos.z;
-            gl_Position = uProj * viewPos;
-            // Scale point size based on distance for consistent apparent size
-            gl_PointSize = uPointSize * (1.0 / (0.5 + vDepth * 0.3));
+            gl_Position = uProj * uView * vec4(aPos, 1.0);
+            gl_PointSize = 2.0;  // 2 pixel dots
         }
     )";
     
     const char* fragSrc = R"(
         #version 330 core
-        in vec3 vWorldPos;
-        in float vDepth;
         out vec4 FragColor;
         
-        uniform vec3 uColor;
-        uniform vec3 uLightDir;
-        uniform vec3 uCameraPos;
-        
         void main() {
-            // Create sphere-like appearance
-            vec2 coord = gl_PointCoord * 2.0 - 1.0;
-            float r2 = dot(coord, coord);
-            if (r2 > 1.0) discard;
-            
-            // Compute sphere normal
-            float z = sqrt(1.0 - r2);
-            vec3 normal = normalize(vec3(coord.x, -coord.y, z));
-            
-            // Lighting
-            vec3 lightDir = normalize(-uLightDir);
-            float diff = max(dot(normal, lightDir), 0.0);
-            float ambient = 0.3;
-            
-            // Fresnel rim lighting
-            vec3 viewDir = vec3(0.0, 0.0, 1.0);
-            float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), 3.0);
-            
-            // Specular
-            vec3 halfDir = normalize(lightDir + viewDir);
-            float spec = pow(max(dot(normal, halfDir), 0.0), 64.0);
-            
-            vec3 color = uColor * (ambient + diff * 0.6) + vec3(1.0) * spec * 0.4 + vec3(0.4, 0.6, 1.0) * fresnel * 0.3;
-            
-            // Soft edge
-            float alpha = smoothstep(1.0, 0.8, r2);
-            
-            FragColor = vec4(color, alpha * 0.9);
+            // Simple blue dot
+            FragColor = vec4(0.2, 0.5, 1.0, 1.0);
         }
     )";
     
@@ -206,6 +171,16 @@ void LiquidRenderer::updateParticles(const std::vector<Particle>& particles) {
     glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(float), positions.data(), GL_DYNAMIC_DRAW);
 }
 
+void LiquidRenderer::updatePositions(const std::vector<glm::vec3>& positions) {
+    particleCount = positions.size();
+    
+    if (particleCount == 0) return;
+    
+    // glm::vec3 is already tightly packed as 3 floats
+    glBindBuffer(GL_ARRAY_BUFFER, pointVBO);
+    glBufferData(GL_ARRAY_BUFFER, particleCount * sizeof(glm::vec3), positions.data(), GL_DYNAMIC_DRAW);
+}
+
 void LiquidRenderer::generateMesh(const MpmSim& sim, float iso) {
     isoLevel = iso;
     buildScalarField(sim);
@@ -240,7 +215,16 @@ void LiquidRenderer::generateMesh(const MpmSim& sim, float iso) {
 }
 
 void LiquidRenderer::render(const glm::mat4& view, const glm::mat4& projection,
-                            const glm::vec3& cameraPos, const glm::vec3& lightDir) {
+                            const glm::vec3& cameraPos, const glm::vec3& lightDir,
+                            int viewportWidth, int viewportHeight) {
+    // SSFR - GPU-accelerated smooth fluid rendering
+    if (mode == RenderMode::SSFR) {
+        if (particleCount == 0) return;
+        renderSSFR(view, projection, cameraPos, lightDir, viewportWidth, viewportHeight);
+        return;
+    }
+    
+    // Points - fast debug rendering
     if (mode == RenderMode::Points) {
         if (particleCount == 0) return;
         
@@ -254,7 +238,6 @@ void LiquidRenderer::render(const glm::mat4& view, const glm::mat4& projection,
         pointShader.setMat4("uProj", projection);
         pointShader.setFloat("uPointSize", pointSize);
         pointShader.setVec3("uColor", pointColor);
-        pointShader.setVec3("uCameraPos", cameraPos);
         pointShader.setVec3("uLightDir", lightDir);
         
         glBindVertexArray(pointVAO);
@@ -262,8 +245,11 @@ void LiquidRenderer::render(const glm::mat4& view, const glm::mat4& projection,
         glBindVertexArray(0);
         
         glDisable(GL_BLEND);
+        return;
     }
-    else if (mode == RenderMode::Mesh) {
+    
+    // Mesh - CPU marching cubes (slow but detailed)
+    if (mode == RenderMode::Mesh) {
         if (indexCount == 0) return;
         
         glEnable(GL_BLEND);
@@ -286,6 +272,388 @@ void LiquidRenderer::render(const glm::mat4& view, const glm::mat4& projection,
         glDisable(GL_BLEND);
     }
 }
+
+// ============== Screen-Space Fluid Rendering ==============
+// Fast GPU-based fluid surface rendering
+// Much faster than CPU marching cubes with better quality
+
+#if 1  // SSFR ENABLED
+bool LiquidRenderer::initSSFR() {
+    // Depth pass shader - renders particles as spheres to depth buffer
+    const char* depthVertSrc = R"(
+        #version 330 core
+        layout(location = 0) in vec3 aPos;
+        
+        uniform mat4 uView;
+        uniform mat4 uProj;
+        uniform float uPointScale;
+        uniform float uPointRadius;
+        
+        out vec3 vViewPos;
+        out float vRadius;
+        
+        void main() {
+            vec4 viewPos = uView * vec4(aPos, 1.0);
+            vViewPos = viewPos.xyz;
+            vRadius = uPointRadius;
+            gl_Position = uProj * viewPos;
+            // Scale point size by distance for perspective-correct spheres
+            gl_PointSize = uPointScale * uPointRadius / (-viewPos.z);
+        }
+    )";
+    
+    const char* depthFragSrc = R"(
+        #version 330 core
+        in vec3 vViewPos;
+        in float vRadius;
+        
+        uniform mat4 uProj;
+        
+        out vec4 FragColor;
+        
+        void main() {
+            // Compute sphere normal from point coord
+            vec2 coord = gl_PointCoord * 2.0 - 1.0;
+            float r2 = dot(coord, coord);
+            if (r2 > 1.0) discard;
+            
+            // Sphere depth offset
+            float z = sqrt(1.0 - r2);
+            vec3 spherePos = vViewPos + vec3(coord.x * vRadius, -coord.y * vRadius, z * vRadius);
+            
+            // Output linear depth
+            FragColor = vec4(-spherePos.z, 0.0, 0.0, 1.0);
+            
+            // Also write to depth buffer for proper occlusion
+            vec4 clipPos = uProj * vec4(spherePos, 1.0);
+            float ndcDepth = clipPos.z / clipPos.w;
+            gl_FragDepth = ndcDepth * 0.5 + 0.5;
+        }
+    )";
+    
+    if (!ssfrDepthShader.loadFromSource(depthVertSrc, depthFragSrc)) {
+        return false;
+    }
+    
+    // Bilateral blur shader
+    const char* blurVertSrc = R"(
+        #version 330 core
+        layout(location = 0) in vec2 aPos;
+        layout(location = 1) in vec2 aTexCoord;
+        out vec2 vTexCoord;
+        void main() {
+            vTexCoord = aTexCoord;
+            gl_Position = vec4(aPos, 0.0, 1.0);
+        }
+    )";
+    
+    const char* blurFragSrc = R"(
+        #version 330 core
+        in vec2 vTexCoord;
+        out vec4 FragColor;
+        
+        uniform sampler2D uDepthTex;
+        uniform vec2 uBlurDir;
+        uniform float uFilterRadius;
+        uniform float uBlurScale;
+        uniform float uBlurDepthFalloff;
+        
+        void main() {
+            float depth = texture(uDepthTex, vTexCoord).r;
+            if (depth <= 0.0) {
+                FragColor = vec4(0.0);
+                return;
+            }
+            
+            float sum = 0.0;
+            float wsum = 0.0;
+            
+            for (float x = -uFilterRadius; x <= uFilterRadius; x += 1.0) {
+                vec2 offset = x * uBlurDir * uBlurScale;
+                float sample_depth = texture(uDepthTex, vTexCoord + offset).r;
+                
+                if (sample_depth > 0.0) {
+                    // Spatial weight (Gaussian)
+                    float r = x / uFilterRadius;
+                    float w_spatial = exp(-r * r);
+                    
+                    // Range weight (depth similarity)
+                    float diff = (sample_depth - depth) * uBlurDepthFalloff;
+                    float w_range = exp(-diff * diff);
+                    
+                    float w = w_spatial * w_range;
+                    sum += sample_depth * w;
+                    wsum += w;
+                }
+            }
+            
+            FragColor = vec4(wsum > 0.0 ? sum / wsum : depth, 0.0, 0.0, 1.0);
+        }
+    )";
+    
+    if (!ssfrBlurShader.loadFromSource(blurVertSrc, blurFragSrc)) {
+        return false;
+    }
+    
+    // Composite shader - reconstructs normals and shades
+    const char* compositeFragSrc = R"(
+        #version 330 core
+        in vec2 vTexCoord;
+        out vec4 FragColor;
+        
+        uniform sampler2D uDepthTex;
+        uniform mat4 uProjInv;
+        uniform vec2 uTexelSize;
+        uniform vec3 uLightDir;
+        uniform vec3 uFluidColor;
+        uniform vec3 uSpecularColor;
+        uniform float uShininess;
+        uniform float uFresnelPower;
+        
+        vec3 uvToView(vec2 uv, float depth) {
+            vec4 clip = vec4(uv * 2.0 - 1.0, 0.0, 1.0);
+            vec4 view = uProjInv * clip;
+            view.xyz /= view.w;
+            return vec3(view.xy, -depth);
+        }
+        
+        void main() {
+            float depth = texture(uDepthTex, vTexCoord).r;
+            if (depth <= 0.0) discard;
+            
+            // Sample neighbors for normal reconstruction
+            float dx = texture(uDepthTex, vTexCoord + vec2(uTexelSize.x, 0.0)).r;
+            float dy = texture(uDepthTex, vTexCoord + vec2(0.0, uTexelSize.y)).r;
+            float dxn = texture(uDepthTex, vTexCoord - vec2(uTexelSize.x, 0.0)).r;
+            float dyn = texture(uDepthTex, vTexCoord - vec2(0.0, uTexelSize.y)).r;
+            
+            // Use central differences where possible
+            float ddx = (dx > 0.0 && dxn > 0.0) ? (dx - dxn) * 0.5 :
+                        (dx > 0.0) ? (dx - depth) : (depth - dxn);
+            float ddy = (dy > 0.0 && dyn > 0.0) ? (dy - dyn) * 0.5 :
+                        (dy > 0.0) ? (dy - depth) : (depth - dyn);
+            
+            // Reconstruct view-space position
+            vec3 viewPos = uvToView(vTexCoord, depth);
+            
+            // Compute normal from depth gradient
+            vec3 ddxPos = uvToView(vTexCoord + vec2(uTexelSize.x, 0.0), dx) - viewPos;
+            vec3 ddyPos = uvToView(vTexCoord + vec2(0.0, uTexelSize.y), dy) - viewPos;
+            vec3 normal = normalize(cross(ddxPos, ddyPos));
+            
+            // Ensure normal points toward camera
+            if (normal.z < 0.0) normal = -normal;
+            
+            // Lighting
+            vec3 lightDir = normalize(-uLightDir);
+            vec3 viewDir = normalize(-viewPos);
+            vec3 halfDir = normalize(lightDir + viewDir);
+            
+            // Diffuse
+            float diff = max(dot(normal, lightDir), 0.0) * 0.6;
+            float ambient = 0.3;
+            
+            // Specular (Blinn-Phong)
+            float spec = pow(max(dot(normal, halfDir), 0.0), uShininess);
+            
+            // Fresnel
+            float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), uFresnelPower);
+            
+            // Combine
+            vec3 color = uFluidColor * (ambient + diff);
+            color += uSpecularColor * spec * 0.8;
+            color += vec3(0.4, 0.6, 1.0) * fresnel * 0.5;
+            
+            // Slight depth-based darkening for thickness impression
+            float depthFade = exp(-depth * 0.3);
+            color *= mix(0.7, 1.0, depthFade);
+            
+            FragColor = vec4(color, 0.95);
+        }
+    )";
+    
+    if (!ssfrCompositeShader.loadFromSource(blurVertSrc, compositeFragSrc)) {
+        return false;
+    }
+    
+    // Create fullscreen quad
+    float quadVerts[] = {
+        // pos        // texcoord
+        -1.0f, -1.0f, 0.0f, 0.0f,
+         1.0f, -1.0f, 1.0f, 0.0f,
+         1.0f,  1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f,
+         1.0f,  1.0f, 1.0f, 1.0f,
+        -1.0f,  1.0f, 0.0f, 1.0f
+    };
+    
+    glGenVertexArrays(1, &ssfrQuadVAO);
+    glGenBuffers(1, &ssfrQuadVBO);
+    glBindVertexArray(ssfrQuadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, ssfrQuadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVerts), quadVerts, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
+    
+    return true;
+}
+
+void LiquidRenderer::cleanupSSFR() {
+    if (ssfrDepthFBO) { glDeleteFramebuffers(1, &ssfrDepthFBO); ssfrDepthFBO = 0; }
+    if (ssfrDepthTex) { glDeleteTextures(1, &ssfrDepthTex); ssfrDepthTex = 0; }
+    if (ssfrBlurFBO) { glDeleteFramebuffers(1, &ssfrBlurFBO); ssfrBlurFBO = 0; }
+    if (ssfrBlurTex) { glDeleteTextures(1, &ssfrBlurTex); ssfrBlurTex = 0; }
+    if (ssfrThickFBO) { glDeleteFramebuffers(1, &ssfrThickFBO); ssfrThickFBO = 0; }
+    if (ssfrThickTex) { glDeleteTextures(1, &ssfrThickTex); ssfrThickTex = 0; }
+    if (ssfrQuadVAO) { glDeleteVertexArrays(1, &ssfrQuadVAO); ssfrQuadVAO = 0; }
+    if (ssfrQuadVBO) { glDeleteBuffers(1, &ssfrQuadVBO); ssfrQuadVBO = 0; }
+}
+
+void LiquidRenderer::resizeSSFR(int width, int height) {
+    if (width == ssfrWidth && height == ssfrHeight) return;
+    ssfrWidth = width;
+    ssfrHeight = height;
+    
+    // Cleanup old textures
+    if (ssfrDepthTex) glDeleteTextures(1, &ssfrDepthTex);
+    if (ssfrBlurTex) glDeleteTextures(1, &ssfrBlurTex);
+    if (ssfrDepthFBO) glDeleteFramebuffers(1, &ssfrDepthFBO);
+    if (ssfrBlurFBO) glDeleteFramebuffers(1, &ssfrBlurFBO);
+    
+    // Create depth texture and FBO
+    glGenTextures(1, &ssfrDepthTex);
+    glBindTexture(GL_TEXTURE_2D, ssfrDepthTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glGenFramebuffers(1, &ssfrDepthFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, ssfrDepthFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssfrDepthTex, 0);
+    
+    // Add depth texture for proper depth testing
+    GLuint depthTex;
+    glGenTextures(1, &depthTex);
+    glBindTexture(GL_TEXTURE_2D, depthTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTex, 0);
+    
+    // Create blur texture and FBO
+    glGenTextures(1, &ssfrBlurTex);
+    glBindTexture(GL_TEXTURE_2D, ssfrBlurTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glGenFramebuffers(1, &ssfrBlurFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, ssfrBlurFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssfrBlurTex, 0);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void LiquidRenderer::renderSSFR(const glm::mat4& view, const glm::mat4& projection,
+                                 const glm::vec3& cameraPos, const glm::vec3& lightDir,
+                                 int viewportWidth, int viewportHeight) {
+    if (particleCount == 0) return;
+    
+    int width = viewportWidth;
+    int height = viewportHeight;
+    
+    // Ensure FBOs are the right size
+    resizeSSFR(width, height);
+    
+    // === Pass 1: Render particle depths ===
+    glBindFramebuffer(GL_FRAMEBUFFER, ssfrDepthFBO);
+    glViewport(0, 0, width, height);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_PROGRAM_POINT_SIZE);
+    glDisable(GL_BLEND);
+    
+    ssfrDepthShader.use();
+    ssfrDepthShader.setMat4("uView", view);
+    ssfrDepthShader.setMat4("uProj", projection);
+    ssfrDepthShader.setFloat("uPointScale", ssfrPointScale);
+    ssfrDepthShader.setFloat("uPointRadius", 0.015f);  // Particle radius in world space
+    
+    glBindVertexArray(pointVAO);
+    glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(particleCount));
+    
+    // === Pass 2: Bilateral blur (horizontal + vertical) ===
+    glDisable(GL_DEPTH_TEST);
+    
+    for (int iter = 0; iter < ssfrBlurIterations; iter++) {
+        // Horizontal blur: depth -> blur
+        glBindFramebuffer(GL_FRAMEBUFFER, ssfrBlurFBO);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        ssfrBlurShader.use();
+        ssfrBlurShader.setInt("uDepthTex", 0);
+        ssfrBlurShader.setVec2("uBlurDir", glm::vec2(1.0f / width, 0.0f));
+        ssfrBlurShader.setFloat("uFilterRadius", 30.0f);  // NUCLEAR: Maximum blur radius
+        ssfrBlurShader.setFloat("uBlurScale", ssfrBlurScale * 25.0f);  // EXTREME blur
+        ssfrBlurShader.setFloat("uBlurDepthFalloff", 20.0f);  // Very soft - merge everything
+        
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, ssfrDepthTex);
+        
+        glBindVertexArray(ssfrQuadVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        
+        // Vertical blur: blur -> depth
+        glBindFramebuffer(GL_FRAMEBUFFER, ssfrDepthFBO);
+        glClear(GL_COLOR_BUFFER_BIT);
+        
+        ssfrBlurShader.setVec2("uBlurDir", glm::vec2(0.0f, 1.0f / height));
+        glBindTexture(GL_TEXTURE_2D, ssfrBlurTex);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
+    
+    // === Pass 3: Composite - reconstruct normals and shade ===
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, width, height);
+    
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    
+    // Compute inverse projection
+    glm::mat4 projInv = glm::inverse(projection);
+    
+    ssfrCompositeShader.use();
+    ssfrCompositeShader.setInt("uDepthTex", 0);
+    ssfrCompositeShader.setMat4("uProjInv", projInv);
+    ssfrCompositeShader.setVec2("uTexelSize", glm::vec2(1.0f / width, 1.0f / height));
+    ssfrCompositeShader.setVec3("uLightDir", lightDir);
+    ssfrCompositeShader.setVec3("uFluidColor", ssfrColor);
+    ssfrCompositeShader.setVec3("uSpecularColor", ssfrSpecular);
+    ssfrCompositeShader.setFloat("uShininess", ssfrShininess);
+    ssfrCompositeShader.setFloat("uFresnelPower", ssfrFresnelPower);
+    
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, ssfrDepthTex);
+    
+    glBindVertexArray(ssfrQuadVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    
+    glBindVertexArray(0);
+    glDisable(GL_BLEND);
+}
+#endif  // SSFR ENABLED
+
+// ============== Marching Cubes ==============
 
 void LiquidRenderer::buildScalarField(const MpmSim& sim) {
     /**

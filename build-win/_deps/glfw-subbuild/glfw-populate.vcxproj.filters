@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\eed7d6f3228d9bb3c84751e1a3345985\glfw-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\eed7d6f3228d9bb3c84751e1a3345985\glfw-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\eed7d6f3228d9bb3c84751e1a3345985\glfw-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\eed7d6f3228d9bb3c84751e1a3345985\glfw-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\eed7d6f3228d9bb3c84751e1a3345985\glfw-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\eed7d6f3228d9bb3c84751e1a3345985\glfw-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\eed7d6f3228d9bb3c84751e1a3345985\glfw-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\eed7d6f3228d9bb3c84751e1a3345985\glfw-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\a768ce6e3a0e211a2991936340e34633\glfw-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\c2a3eb99b8ac7175d70421264215192a\glfw-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glfw-subbuild\CMakeFiles\glfw-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{A63E0CC5-4B15-32C1-9504-D49DA8D42ED3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

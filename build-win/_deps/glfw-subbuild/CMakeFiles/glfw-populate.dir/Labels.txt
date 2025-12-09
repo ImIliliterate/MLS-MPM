@@ -1,0 +1,14 @@
+# Target labels
+ glfw-populate
+# Source files and their labels
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/glfw-populate
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/c2a3eb99b8ac7175d70421264215192a/glfw-populate.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/a768ce6e3a0e211a2991936340e34633/glfw-populate-complete.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/eed7d6f3228d9bb3c84751e1a3345985/glfw-populate-build.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/eed7d6f3228d9bb3c84751e1a3345985/glfw-populate-configure.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/eed7d6f3228d9bb3c84751e1a3345985/glfw-populate-download.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/eed7d6f3228d9bb3c84751e1a3345985/glfw-populate-install.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/eed7d6f3228d9bb3c84751e1a3345985/glfw-populate-mkdir.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/eed7d6f3228d9bb3c84751e1a3345985/glfw-populate-patch.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/eed7d6f3228d9bb3c84751e1a3345985/glfw-populate-test.rule
+C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glfw-subbuild/CMakeFiles/eed7d6f3228d9bb3c84751e1a3345985/glfw-populate-update.rule

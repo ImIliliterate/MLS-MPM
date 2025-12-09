@@ -112,18 +112,25 @@ public:
     // Simulation parameters
     float ambientTemperature = 0.0f;
     float buoyancyAlpha = 0.1f;    // Density coefficient (smoke falls)
-    float buoyancyBeta = 1.0f;     // Temperature coefficient (hot rises)
+    float buoyancyBeta = 0.5f;     // Temperature coefficient (hot rises) - gentle convection
     float diffusion = 0.0001f;      // Velocity diffusion
     float densityDiffusion = 0.0001f;
-    float dissipation = 0.99f;      // Density decay
-    float tempDissipation = 0.995f; // Temperature decay
+    float dissipation = 0.995f;     // Density decay - slower dissipation for visibility
+    float tempDissipation = 0.998f; // Temperature decay - slower for persistent convection
     
     // Pressure solver iterations
     int pressureIterations = 50;
     
+    // GPU acceleration flag
+    bool useGPU = false;
+    bool gpuInitialized = false;
+    
     SmokeSim();
+    ~SmokeSim();
     
     void init(int nx, int ny, int nz);
+    void initGPU();  // Initialize GPU buffers
+    void cleanupGPU();
     void reset();
     
     // Main simulation step
@@ -133,6 +140,9 @@ public:
     void addDensity(const glm::vec3& worldPos, float amount, float radius);
     void addTemperature(const glm::vec3& worldPos, float amount, float radius);
     void addVelocity(const glm::vec3& worldPos, const glm::vec3& vel, float radius);
+    
+    // Fill entire grid with uniform density (for "fog chamber" effect)
+    void fillDensity(float value);
     
     // Set liquid occupancy for coupling
     void setLiquidMask(const std::vector<glm::vec3>& particlePositions, float particleRadius);

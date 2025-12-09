@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/imgui-populate"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/79e3decc9a28e4545b0f4ff187f627ac/imgui-populate.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/14e06dfe6e451321056ebd6093c1655a/imgui-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/a6c9acc1dbdc02b423b2966ca604ae46/imgui-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/a6c9acc1dbdc02b423b2966ca604ae46/imgui-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/a6c9acc1dbdc02b423b2966ca604ae46/imgui-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/a6c9acc1dbdc02b423b2966ca604ae46/imgui-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/a6c9acc1dbdc02b423b2966ca604ae46/imgui-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/a6c9acc1dbdc02b423b2966ca604ae46/imgui-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/a6c9acc1dbdc02b423b2966ca604ae46/imgui-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/imgui-subbuild/CMakeFiles/a6c9acc1dbdc02b423b2966ca604ae46/imgui-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"imgui-populate"
+		],
+		"name" : "imgui-populate"
+	}
+}

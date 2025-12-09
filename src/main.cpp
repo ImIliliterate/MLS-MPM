@@ -38,6 +38,7 @@
 #include "render/SmokeRenderer.h"
 
 #include <iostream>
+#include <string>
 #include <chrono>
 
 // Window settings
@@ -91,14 +92,14 @@ struct AppState {
     // UI settings
     bool showUI = true;
     bool renderLiquid = true;
-    bool renderSmoke = true;
-    bool renderPoints = false;  // Use mesh rendering for smoother appearance
+    bool renderSmoke = true;       // Smoke rendering enabled by default
+    int renderMode = 0;            // 0=SSFR (fast+pretty), 1=Points (debug), 2=Mesh (slow)
     
-    // Performance settings - balanced for laptops
-    bool performanceMode = false;  // OFF to get fluid look
-    bool enableCohesion = false;   // Still OFF (too expensive)
-    bool enableSmokeSimulation = false;  // OFF for now
-    int substeps = 3;  // Middle ground
+    // Performance settings
+    bool performanceMode = false;  // OFF by default - full features
+    bool enableCohesion = false;
+    bool enableSmokeSimulation = true;   // Smoke enabled by default
+    int substeps = 4;  // NUCLEAR: 4 substeps with dt=0.001 for stability
     
     // Stats
     float mpmTime = 0.0f;
@@ -189,6 +190,32 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void initSimulation(DemoScene scene) {
     // Phase 1: Apply resolution preset for good PPC
+#ifdef USE_CUDA
+    // GPU path: high particle density for smooth fluid
+    if (!g_app.performanceMode) {
+        g_params.fluidPreset = FluidPreset::Default;  // 64^3 grid
+        g_params.particleSpacingFactor = 0.35f;  // ~23 PPC for smooth surface
+        g_app.substeps = 4;  // NUCLEAR: 4 substeps with low stiffness = stable
+    } else {
+        g_params.fluidPreset = FluidPreset::Coarse;  // 48^3 grid  
+        g_params.particleSpacingFactor = 0.5f;  // ~8 PPC (faster)
+        g_app.substeps = 3;  // Performance mode
+    }
+    // GPU smoke solver - disable in performance mode
+    g_app.renderSmoke = !g_app.performanceMode;
+    g_params.enableSmokeSimulation = !g_app.performanceMode;
+    g_params.enableCoupling = !g_app.performanceMode;
+#else
+    // CPU mode: use lighter settings
+    if (g_app.performanceMode) {
+        g_params.fluidPreset = FluidPreset::Coarse;
+        g_app.substeps = 2;
+        g_params.particleSpacingFactor = 0.75f;
+    }
+#endif
+    g_params.skipDiagnosticsEveryFrame = true;
+    g_params.diagnosticsInterval = 30;
+
     int gridRes = g_params.liquidGridRes;
     // Iteration 3: Resolution presets
     switch (g_params.fluidPreset) {
@@ -205,6 +232,13 @@ void initSimulation(DemoScene scene) {
     
     g_app.mpm.init(gridRes, gridRes, gridRes);
     g_app.smoke.init(g_params.smokeGridRes, g_params.smokeGridRes, g_params.smokeGridRes);
+    
+#ifdef USE_CUDA
+    // Enable GPU smoke solver
+    g_app.smoke.useGPU = true;
+    g_app.smoke.initGPU();
+#endif
+    
     g_app.coupling.init(&g_app.mpm, &g_app.smoke);
     g_app.coupling.enabled = g_params.enableCoupling;
     
@@ -214,17 +248,18 @@ void initSimulation(DemoScene scene) {
     g_app.simTime = 0.0f;
     g_app.accumulator = 0.0f;
     
-    // Iteration 3: Particle spacing = dx * 0.5 for ~8 PPC in filled regions
-    // With 64³ grid: dx = 1.0/64 ≈ 0.0156
-    // spacing = dx * 0.5 ≈ 0.0078, giving ~8 particles per cell
+    // High-resolution fluid: use dx * spacingFactor for proper PPC
     float dx = 1.0f / static_cast<float>(gridRes);
-    float spacing = dx * g_params.particleSpacingFactor;  // Iteration 3: dx * 0.5
-    g_params.dx = dx;  // Store for diagnostics
+    // spacing = dx * 0.5 gives 2^3 = 8 particles per cell in filled regions
+    float spacing = dx * g_params.particleSpacingFactor;
+    g_params.dx = dx;
     
-    // Iteration 3: Particle render radius tied to dx
-    g_app.liquidRenderer.pointSize = g_params.particleRenderRadius * dx * 1000.0f;
+    // Debug: small dots to see actual physics
+    g_app.liquidRenderer.pointSize = 1.5f;  // Fine spray look (less grainy)
     g_app.liquidRenderer.isoLevel = g_params.isoThreshold;
-    g_app.renderPoints = false;
+    
+    // Use SSFR for fast GPU-accelerated smooth fluid rendering
+    g_app.renderMode = 0;  // SSFR (fast + pretty)
     
     switch (scene) {
         case DemoScene::FallingBlock: {
@@ -295,7 +330,16 @@ void initSimulation(DemoScene scene) {
         return g_app.sdfScene.gradient(p);
     };
     
-    // Iteration 3: Enhanced PPC diagnostics
+    // Mark GPU buffers dirty so particles get uploaded
+    g_app.mpm.uploadToGpu();
+    
+    // Auto-start simulation after reset
+    g_app.running = true;
+    
+    // Log resolution stats
+    g_app.mpm.logResolutionStats();
+    
+    // Enhanced PPC diagnostics
     int numCells = gridRes * gridRes * gridRes;
     int numParticles = static_cast<int>(g_app.mpm.particles.size());
     float avgPPC = static_cast<float>(numParticles) / static_cast<float>(numCells);
@@ -308,9 +352,9 @@ void initSimulation(DemoScene scene) {
     std::cout << "Avg PPC (global): " << avgPPC << std::endl;
     std::cout << "Target: 150k+ particles, 8+ PPC in filled regions" << std::endl;
     std::cout << "---------------------------------------" << std::endl;
-    std::cout << "FLIP ratio: " << g_params.flipRatio << " (" << (g_params.flipRatio * 100) << "% FLIP)" << std::endl;
-    std::cout << "Stiffness K: " << g_params.stiffnessK << std::endl;
-    std::cout << "Damping: " << g_params.damping << std::endl;
+    std::cout << "FLIP ratio: " << g_params.flipRatio << std::endl;
+    std::cout << "Bulk Modulus: " << g_params.bulkModulus << std::endl;
+    std::cout << "Substeps: " << g_params.substeps << ", dt: " << g_params.dt << std::endl;
     std::cout << "Viscosity blend: " << g_params.viscosityBlend << std::endl;
     std::cout << "Grid smoothing: " << (g_params.enableGridSmoothing ? "ON" : "OFF") << std::endl;
     std::cout << "======================================\n" << std::endl;
@@ -321,10 +365,10 @@ void simulationStep(float dt) {
     float subDt = dt / numSubsteps;
     
     // Sync global params with simulation objects
-    g_app.mpm.enableCohesion = g_params.enableCohesion && !g_app.performanceMode;
+    g_app.mpm.enableCohesion = g_params.enableCohesion;
     g_app.mpm.gravity = g_params.gravity;
     g_app.mpm.flipRatio = g_params.flipRatio;
-    g_app.coupling.enabled = g_params.enableCoupling && !g_app.performanceMode;
+    g_app.coupling.enabled = g_params.enableCoupling;
     
     for (int i = 0; i < numSubsteps; i++) {
         // MPM step
@@ -336,18 +380,30 @@ void simulationStep(float dt) {
         // Smoke step (can be disabled for performance)
         auto smokeStart = std::chrono::high_resolution_clock::now();
         
-        if (g_params.enableSmokeSimulation && !g_app.performanceMode) {
-        // Scene-specific smoke sources
+        if (g_params.enableSmokeSimulation) {
+        // Scene-specific smoke sources (tuned for stability)
         switch (g_app.currentScene) {
+            case DemoScene::FallingBlock:
+                // LIGHT GROUND FOG: Thin layer for performance
+                // (Use denser fog only for final renders)
+                for (float x = 0.1f; x < 0.9f; x += 0.15f) {
+                    for (float z = 0.1f; z < 0.9f; z += 0.15f) {
+                        g_app.smoke.addDensity(glm::vec3(x, 0.1f, z), 0.5f, 0.1f);
+                    }
+                }
+                break;
+                
             case DemoScene::BoilingCauldron:
-                g_app.smoke.addTemperature(glm::vec3(0.5f, 0.1f, 0.5f), 0.5f, 0.15f);
-                g_app.smoke.addDensity(glm::vec3(0.5f, 0.15f, 0.5f), 0.2f, 0.1f);
+                // Gentle heat source - prevents runaway velocities
+                g_app.smoke.addTemperature(glm::vec3(0.5f, 0.1f, 0.5f), 0.3f, 0.15f);
+                g_app.smoke.addDensity(glm::vec3(0.5f, 0.15f, 0.5f), 0.5f, 0.12f);
                 break;
                 
             case DemoScene::FanTest:
+                // Moderate wind from left side
                 g_app.smoke.addVelocity(glm::vec3(0.0f, 0.3f, 0.5f), 
-                                        glm::vec3(3.0f, 0.0f, 0.0f), 0.15f);
-                g_app.smoke.addDensity(glm::vec3(0.1f, 0.3f, 0.5f), 0.3f, 0.08f);
+                                        glm::vec3(2.0f, 0.0f, 0.0f), 0.2f);
+                g_app.smoke.addDensity(glm::vec3(0.1f, 0.3f, 0.5f), 0.5f, 0.1f);
                 break;
                 
             default:
@@ -394,16 +450,32 @@ void render() {
     
     // Render liquid
     if (g_app.renderLiquid) {
-        g_app.liquidRenderer.mode = g_app.renderPoints ? 
-            LiquidRenderer::RenderMode::Points : LiquidRenderer::RenderMode::Mesh;
-        
-        g_app.liquidRenderer.updateParticles(g_app.mpm.particles);
-        
-        if (!g_app.renderPoints) {
-            g_app.liquidRenderer.generateMesh(g_app.mpm, g_params.isoThreshold);
+        // Set render mode: 0=SSFR, 1=Points, 2=Mesh
+        switch (g_app.renderMode) {
+            case 0: g_app.liquidRenderer.mode = LiquidRenderer::RenderMode::SSFR; break;
+            case 1: g_app.liquidRenderer.mode = LiquidRenderer::RenderMode::Points; break;
+            case 2: g_app.liquidRenderer.mode = LiquidRenderer::RenderMode::Mesh; break;
         }
         
-        g_app.liquidRenderer.render(view, projection, cameraPos, lightDir);
+        // Mesh mode: Generate smooth liquid surface using Marching Cubes
+        if (g_app.renderMode == 2) {
+            // OPTIMIZATION: Only regenerate mesh every 3rd frame
+            // (Mesh changes slowly enough that this is nearly invisible)
+            static int meshFrameCounter = 0;
+            meshFrameCounter++;
+            if (meshFrameCounter % 3 == 0) {
+                g_app.mpm.syncParticlesToCpu();
+                g_app.liquidRenderer.generateMesh(g_app.mpm, g_params.isoThreshold);
+            }
+        } else {
+            // Points mode: just download positions (fast - only 12 bytes per particle)
+            static std::vector<glm::vec3> renderPositions;
+            g_app.mpm.getPositionsForRendering(renderPositions);
+            g_app.liquidRenderer.updatePositions(renderPositions);
+        }
+        
+        g_app.liquidRenderer.render(view, projection, cameraPos, lightDir, 
+                                       g_app.windowWidth, g_app.windowHeight);
     }
     
     auto renderEnd = std::chrono::high_resolution_clock::now();
@@ -512,7 +584,7 @@ void renderUI() {
             if (ImGui::Button("150##k")) g_params.stiffnessK = 150.0f;
             
             ImGui::SliderFloat("Gravity", &g_params.gravity, -20.0f, 0.0f);
-            ImGui::SliderInt("Substeps", &g_app.substeps, 2, 8);
+            ImGui::SliderInt("Substeps", &g_app.substeps, 1, 16);
             
             // Round 6: Quality presets for performance vs fidelity
             ImGui::Separator();
@@ -592,22 +664,30 @@ void renderUI() {
         if (ImGui::CollapsingHeader("Rendering")) {
         ImGui::Checkbox("Render Liquid", &g_app.renderLiquid);
         ImGui::Checkbox("Render Smoke", &g_app.renderSmoke);
-        ImGui::Checkbox("Point Mode", &g_app.renderPoints);
         
-        if (!g_app.renderPoints) {
-                ImGui::SliderFloat("Iso Level", &g_params.isoThreshold, 0.1f, 2.0f);
-                ImGui::SliderFloat("Smoothing Radius", &g_params.smoothingRadius, 1.0f, 5.0f);
-                ImGui::SliderInt("Smooth Iterations", &g_params.smoothingIterations, 0, 5);
+        // Render mode selector
+        const char* renderModes[] = { "SSFR (Smooth)", "Points", "Mesh" };
+        ImGui::Combo("Render Mode", &g_app.renderMode, renderModes, 3);
+        
+        if (g_app.renderMode == 0) {  // SSFR mode
+            ImGui::SliderFloat("SSFR Point Scale", &g_app.liquidRenderer.ssfrPointScale, 20.0f, 120.0f);
+            ImGui::SliderInt("SSFR Blur Iters", &g_app.liquidRenderer.ssfrBlurIterations, 1, 4);
+            ImGui::SliderFloat("SSFR Blur Scale", &g_app.liquidRenderer.ssfrBlurScale, 0.001f, 0.02f);
+        }
+        if (g_app.renderMode == 2) {  // Mesh mode
+            ImGui::SliderFloat("Iso Level", &g_params.isoThreshold, 0.1f, 2.0f);
+            ImGui::SliderFloat("Smoothing Radius", &g_params.smoothingRadius, 1.0f, 5.0f);
+            ImGui::SliderInt("Smooth Iterations", &g_params.smoothingIterations, 0, 5);
         }
         ImGui::SliderFloat("Smoke Density", &g_app.smokeRenderer.densityScale, 1.0f, 50.0f);
-        ImGui::SliderInt("Ray Steps", &g_app.smokeRenderer.raySteps, 16, 128);
+        ImGui::SliderInt("Ray Steps", &g_app.smokeRenderer.raySteps, 4, 64);
         }
         
         // ==================== PERFORMANCE ====================
         if (ImGui::CollapsingHeader("Performance")) {
             if (ImGui::Checkbox("Performance Mode", &g_app.performanceMode)) {
                 if (g_app.performanceMode) {
-                    g_app.renderPoints = true;
+                    g_app.renderMode = 0;  // SSFR (fast + pretty)
                     g_params.enableCohesion = false;
                     g_params.enableSmokeSimulation = false;
                 }
@@ -677,7 +757,24 @@ int main() {
     }
     
     std::cout << "OpenGL: " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+    const char* rendererCStr = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+    std::string rendererStr = rendererCStr ? rendererCStr : "";
+    std::cout << "Renderer: " << rendererStr << std::endl;
+    // Fallback: if we are on a software or basic driver, force light settings
+    if (rendererStr.find("Microsoft") != std::string::npos ||
+        rendererStr.find("llvmpipe")  != std::string::npos ||
+        rendererStr.find("SwiftShader") != std::string::npos) {
+        g_app.performanceMode = true;
+        g_app.renderMode = 1;                   // Points for software renderer
+        g_app.substeps = 2;                     // fewer physics steps
+        g_params.fluidPreset = FluidPreset::Coarse; // lower grid res
+        g_params.smoothingIterations = 1;
+        g_params.skipDiagnosticsEveryFrame = true;
+        g_params.diagnosticsInterval = 30;
+        g_params.enableSmokeSimulation = false;
+        g_params.enableCoupling = false;
+        g_app.smokeRenderer.raySteps = 24;      // cheaper smoke
+    }
     
     // Initialize ImGui
     IMGUI_CHECKVERSION();
@@ -715,6 +812,8 @@ int main() {
         fpsAccum += deltaTime;
         if (fpsAccum >= 1.0f) {
             g_app.fps = frameCount / fpsAccum;
+            printf("FPS: %.1f | Particles: %d | Substeps: %d\n", 
+                   g_app.fps, g_params.numLiquidParticles, g_app.substeps);
             frameCount = 0;
             fpsAccum = 0.0f;
         }

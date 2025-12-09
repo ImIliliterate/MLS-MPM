@@ -4,6 +4,12 @@
 #include <cmath>
 #include <unordered_map>
 
+#ifdef USE_CUDA
+#include "../gpu/smoke_cuda.h"
+#include "../gpu/mpm_cuda.h"
+#include <cuda_runtime.h>
+#endif
+
 Coupling::Coupling(MpmSim* mpm, SmokeSim* smoke)
     : mpm(mpm), smoke(smoke) {
 }
@@ -18,6 +24,42 @@ void Coupling::init(MpmSim* mpmSim, SmokeSim* smokeSim) {
 void Coupling::apply(float dt) {
     if (!enabled || !mpm || !smoke) return;
     
+    // Frame counter for skipping expensive operations
+    static int frameCounter = 0;
+    frameCounter++;
+    
+#ifdef USE_CUDA
+    // GPU coupling path
+    if (smoke->useGPU && smoke->gpuInitialized && isSmokeCudaInitialized()) {
+        void* d_particles = mpmCudaGetParticleBuffer();
+        int numParticles = mpmCudaGetParticleCount();
+        
+        if (d_particles && numParticles > 0) {
+            float3 worldMin = make_float3(mpm->worldMin.x, mpm->worldMin.y, mpm->worldMin.z);
+            float dx = smoke->dx;
+            
+            // Smoke → Liquid: Apply drag (every frame - cheap)
+            if (smokeToLiquid) {
+                smokeCudaApplyDragToParticles(
+                    d_particles,
+                    numParticles,
+                    worldMin, dx,
+                    dt, g_params.dragCoeff
+                );
+            }
+            
+            // Liquid → Smoke: DISABLED for performance
+            // The atomic contention from 100k particles writing to same grid cells
+            // is a massive bottleneck. Re-enable only for final renders.
+            // if (liquidToSmoke && (frameCounter % 4 == 0)) {
+            //     smokeCudaApplyParticlesToSmoke(...);
+            // }
+        }
+        return;  // Skip CPU path
+    }
+#endif
+    
+    // CPU coupling path
     // Build neighbor counts for surface detection (Phase 1.2)
     // Skip if using fast mode (just use smoke grid for surface detection)
     if (!g_params.skipCouplingNeighborCount) {

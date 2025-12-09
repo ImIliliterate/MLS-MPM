@@ -1,0 +1,11 @@
+{
+	"InstallScripts" : 
+	[
+		"C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/cmake_install.cmake",
+		"C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/cmake_install.cmake",
+		"C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-build/src/cmake_install.cmake",
+		"C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glm-build/cmake_install.cmake",
+		"C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glm-build/glm/cmake_install.cmake"
+	],
+	"Parallel" : false
+}

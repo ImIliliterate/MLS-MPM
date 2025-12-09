@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/glm-populate"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/aec2de088247866e23f12086f136537e/glm-populate.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/05f41e39d6e3a39ba6f04b20954cdf0b/glm-populate-complete.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/1660cbf4bccaf5be61eeb134d7a3a9c4/glm-populate-build.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/1660cbf4bccaf5be61eeb134d7a3a9c4/glm-populate-configure.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/1660cbf4bccaf5be61eeb134d7a3a9c4/glm-populate-download.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/1660cbf4bccaf5be61eeb134d7a3a9c4/glm-populate-install.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/1660cbf4bccaf5be61eeb134d7a3a9c4/glm-populate-mkdir.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/1660cbf4bccaf5be61eeb134d7a3a9c4/glm-populate-patch.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/1660cbf4bccaf5be61eeb134d7a3a9c4/glm-populate-test.rule"
+		},
+		{
+			"file" : "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/1660cbf4bccaf5be61eeb134d7a3a9c4/glm-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"glm-populate"
+		],
+		"name" : "glm-populate"
+	}
+}

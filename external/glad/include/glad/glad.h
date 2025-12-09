@@ -375,6 +375,18 @@ GLAPI PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer;
 GLAPI PFNGLDISPATCHCOMPUTEPROC glDispatchCompute;
 GLAPI PFNGLMEMORYBARRIERPROC glMemoryBarrier;
 
+/* Additional OpenGL functions for SSFR */
+typedef void (APIENTRYP PFNGLDEPTHMASKPROC)(GLboolean flag);
+typedef void (APIENTRYP PFNGLGETINTEGERVPROC)(GLenum pname, GLint *data);
+typedef void (APIENTRYP PFNGLCLEARDEPTHPROC)(GLdouble depth);
+GLAPI PFNGLDEPTHMASKPROC glDepthMask;
+GLAPI PFNGLGETINTEGERVPROC glGetIntegerv;
+GLAPI PFNGLCLEARDEPTHPROC glClearDepth;
+
+#define GL_VIEWPORT 0x0BA2
+#define GL_DEPTH_COMPONENT 0x1902
+#define GL_DEPTH_COMPONENT24 0x81A6
+
 /* Function pointer type for loading */
 typedef void* (*GLADloadproc)(const char *name);
 

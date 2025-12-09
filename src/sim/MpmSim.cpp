@@ -2,6 +2,7 @@
 #include "SimulationParams.h"
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <unordered_map>
@@ -22,7 +23,34 @@ void MpmSim::init(int nx, int ny, int nz) {
     dx = (worldMax.x - worldMin.x) / static_cast<float>(Nx);
     
     grid.resize(Nx * Ny * Nz);
+    
+#ifdef USE_CUDA
+    std::cout << "[CUDA] GPU simulation enabled" << std::endl;
+#endif
+    
     reset();
+}
+
+void MpmSim::logResolutionStats() const {
+    int numCells = Nx * Ny * Nz;
+    int numParticles = static_cast<int>(particles.size());
+    float avgPPC = static_cast<float>(numParticles) / static_cast<float>(numCells);
+    
+    // Count active cells (cells with mass)
+    int activeCells = 0;
+    for (const auto& node : grid) {
+        if (node.mass > 1e-6f) activeCells++;
+    }
+    float activePPC = activeCells > 0 ? static_cast<float>(numParticles) / static_cast<float>(activeCells) : 0.0f;
+    
+    std::cout << "\n===== RESOLUTION STATS =====" << std::endl;
+    std::cout << "Grid: " << Nx << "x" << Ny << "x" << Nz << " = " << numCells << " cells" << std::endl;
+    std::cout << "Cell size (dx): " << dx << std::endl;
+    std::cout << "Particles: " << numParticles << std::endl;
+    std::cout << "Avg PPC (all cells): " << avgPPC << std::endl;
+    std::cout << "Avg PPC (active cells): " << activePPC << std::endl;
+    std::cout << "Target: >= 8 PPC in filled regions" << std::endl;
+    std::cout << "============================\n" << std::endl;
 }
 
 void MpmSim::reset() {
@@ -36,11 +64,18 @@ void MpmSim::addBox(const glm::vec3& min, const glm::vec3& max, const glm::vec3&
     float volume = particleSpacing * particleSpacing * particleSpacing;
     float mass = density * volume;
     
+    // Jitter amplitude: ±10% of spacing to break grid aliasing
+    float jitterAmp = particleSpacing * 0.1f;
+    
     for (float x = min.x; x <= max.x; x += particleSpacing) {
         for (float y = min.y; y <= max.y; y += particleSpacing) {
             for (float z = min.z; z <= max.z; z += particleSpacing) {
                 Particle p;
-                p.x = glm::vec3(x, y, z);
+                // Add random jitter to break lattice symmetry
+                float jx = jitterAmp * (2.0f * (rand() / (float)RAND_MAX) - 1.0f);
+                float jy = jitterAmp * (2.0f * (rand() / (float)RAND_MAX) - 1.0f);
+                float jz = jitterAmp * (2.0f * (rand() / (float)RAND_MAX) - 1.0f);
+                p.x = glm::vec3(x + jx, y + jy, z + jz);
                 p.v = velocity;
                 p.mass = mass;
                 p.volume0 = volume;
@@ -60,6 +95,9 @@ void MpmSim::addSphere(const glm::vec3& center, float radius, const glm::vec3& v
     float mass = density * volume;
     float r2 = radius * radius;
     
+    // Jitter amplitude: ±10% of spacing to break grid aliasing
+    float jitterAmp = particleSpacing * 0.1f;
+    
     for (float x = center.x - radius; x <= center.x + radius; x += particleSpacing) {
         for (float y = center.y - radius; y <= center.y + radius; y += particleSpacing) {
             for (float z = center.z - radius; z <= center.z + radius; z += particleSpacing) {
@@ -67,7 +105,11 @@ void MpmSim::addSphere(const glm::vec3& center, float radius, const glm::vec3& v
                 glm::vec3 diff = pos - center;
                 if (glm::dot(diff, diff) <= r2) {
                     Particle p;
-                    p.x = pos;
+                    // Add random jitter to break lattice symmetry
+                    float jx = jitterAmp * (2.0f * (rand() / (float)RAND_MAX) - 1.0f);
+                    float jy = jitterAmp * (2.0f * (rand() / (float)RAND_MAX) - 1.0f);
+                    float jz = jitterAmp * (2.0f * (rand() / (float)RAND_MAX) - 1.0f);
+                    p.x = pos + glm::vec3(jx, jy, jz);
                     p.v = velocity;
                     p.mass = mass;
                     p.volume0 = volume;
@@ -87,11 +129,35 @@ float MpmSim::computeAdaptiveDt() const {
         return g_params.dt;
     }
     
+#ifdef USE_CUDA
+    // GPU path: use CUDA-computed CFL-safe dt
+    extern float mpmCudaComputeSafeDt(int numParticles, float dx, float bulkModulus, float density);
+    float safeDt = mpmCudaComputeSafeDt(
+        static_cast<int>(particles.size()),
+        dx,
+        g_params.bulkModulus,
+        g_params.restDensity
+    );
+    return safeDt;
+#else
+    // CPU path: compute CFL from particle velocities
     float h = (worldMax.x - worldMin.x) / static_cast<float>(Nx);  // cell size
-    float maxV = g_params.maxLiquidSpeed;
+    float maxV = std::max(g_params.maxLiquidSpeed, 0.1f);  // minimum to avoid div by zero
     
-    float dtCfl = (maxV > 1e-6f) ? g_params.cflNumber * h / maxV : g_params.maxDt;
-    return std::min(g_params.maxDt, dtCfl);
+    // CFL for advection: dt < C * h / v_max
+    float dtAdvect = g_params.cflNumber * h / maxV;
+    
+    // CFL for stiffness (sound speed): c = sqrt(K / rho), dt < C * h / c
+    // This prevents pressure waves from traveling more than one cell per step
+    float soundSpeed = std::sqrt(g_params.stiffnessK / g_params.restDensity);
+    float dtSound = g_params.cflNumber * h / soundSpeed;
+    
+    // Take the minimum of both constraints
+    float dtCfl = std::min(dtAdvect, dtSound);
+    
+    // Clamp to user-specified range
+    return std::clamp(dtCfl, g_params.dt * 0.1f, g_params.maxDt);
+#endif
 }
 
 void MpmSim::computeDiagnostics() {
@@ -125,10 +191,27 @@ void MpmSim::step(float dt) {
     g_params.actualDt = adaptDt;
     
     // Apply cohesion/surface tension forces (expensive, can be disabled)
+    // Note: Cohesion runs on CPU and requires particle download, so skip on GPU
+#ifndef USE_CUDA
     if (enableCohesion) {
         applyCohesionForces(adaptDt);
     }
+#endif
+
+#ifdef USE_CUDA
+    extern void mpmCudaStepSimple(
+        std::vector<Particle>& particles,
+        int Nx, int Ny, int Nz,
+        float dx, float dt,
+        float apicBlend, float flipRatio, float gravity,
+        const glm::vec3& worldMin, const glm::vec3& worldMax);
     
+    mpmCudaStepSimple(particles, Nx, Ny, Nz, dx, adaptDt,
+                      g_params.apicBlend, flipRatio, g_params.gravity,
+                      worldMin, worldMax);
+    return;
+#endif
+
     clearGrid();
     particleToGrid(adaptDt);
     
@@ -342,7 +425,8 @@ void MpmSim::applyPressureForces(float dt) {
     float invTwoDx = 1.0f / (2.0f * dx);
     
     #ifdef USE_OPENMP
-    #pragma omp parallel for collapse(3)
+    // MSVC OpenMP on Windows does not support collapse for these nested loops reliably
+    #pragma omp parallel for
     #endif
     for (int k = 1; k < Nz - 1; k++) {
         for (int j = 1; j < Ny - 1; j++) {
@@ -765,4 +849,42 @@ glm::mat3 MpmSim::computeStress(const Particle& p) const {
     glm::mat3 stress = -pressure * glm::mat3(1.0f);
     
     return stress;
+}
+
+// ==================== GPU Support Methods ====================
+
+#ifdef USE_CUDA
+extern void mpmCudaGetPositions(std::vector<glm::vec3>& outPositions);
+extern void mpmCudaMarkDirty();
+#endif
+
+void MpmSim::getPositionsForRendering(std::vector<glm::vec3>& positions) const {
+#ifdef USE_CUDA
+    mpmCudaGetPositions(positions);
+    return;
+#endif
+    positions.resize(particles.size());
+    for (size_t i = 0; i < particles.size(); i++) {
+        positions[i] = particles[i].x;
+    }
+}
+
+void MpmSim::syncParticlesToCpu() {
+#ifdef USE_CUDA
+    mpmCudaDownloadParticles(particles);
+#endif
+}
+
+void MpmSim::uploadToGpu() {
+#ifdef USE_CUDA
+    mpmCudaMarkDirty();
+#endif
+}
+
+bool MpmSim::isGpuEnabled() const {
+#ifdef USE_CUDA
+    return true;
+#else
+    return false;
+#endif
 }

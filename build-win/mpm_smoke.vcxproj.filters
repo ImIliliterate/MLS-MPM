@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\MpmSim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\SmokeSim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\Coupling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\SDF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\SimulationParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\render\LiquidRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\render\SmokeRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\render\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\render\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{339FFB74-81C2-30AD-8EA4-E405A18DF174}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

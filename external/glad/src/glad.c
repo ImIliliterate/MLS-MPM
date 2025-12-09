@@ -84,6 +84,11 @@ PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer;
 PFNGLDISPATCHCOMPUTEPROC glDispatchCompute;
 PFNGLMEMORYBARRIERPROC glMemoryBarrier;
 
+/* Additional SSFR functions */
+PFNGLDEPTHMASKPROC glDepthMask;
+PFNGLGETINTEGERVPROC glGetIntegerv;
+PFNGLCLEARDEPTHPROC glClearDepth;
+
 static void* get_proc(GLADloadproc load, const char* name) {
     void* result = load(name);
     return result;
@@ -169,6 +174,11 @@ int gladLoadGLLoader(GLADloadproc load) {
     glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)get_proc(load, "glFramebufferRenderbuffer");
     
     glDispatchCompute = (PFNGLDISPATCHCOMPUTEPROC)get_proc(load, "glDispatchCompute");
+    
+    /* Additional SSFR functions */
+    glDepthMask = (PFNGLDEPTHMASKPROC)get_proc(load, "glDepthMask");
+    glGetIntegerv = (PFNGLGETINTEGERVPROC)get_proc(load, "glGetIntegerv");
+    glClearDepth = (PFNGLCLEARDEPTHPROC)get_proc(load, "glClearDepth");
     glMemoryBarrier = (PFNGLMEMORYBARRIERPROC)get_proc(load, "glMemoryBarrier");
     
     return glClear != NULL;

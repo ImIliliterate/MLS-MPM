@@ -26,6 +26,8 @@ endif()
 # Option for CUDA support
 option(USE_CUDA "Enable CUDA support for GPU acceleration" OFF)
 if(USE_CUDA)
+    set(CMAKE_CUDA_STANDARD 14)
+    set(CMAKE_CUDA_STANDARD_REQUIRED ON)
     enable_language(CUDA)
     find_package(CUDAToolkit REQUIRED)
 endif()
@@ -127,10 +129,18 @@ target_link_libraries(mpm_smoke PRIVATE
 if(OpenMP_CXX_FOUND)
     target_link_libraries(mpm_smoke PRIVATE OpenMP::OpenMP_CXX)
     target_compile_definitions(mpm_smoke PRIVATE USE_OPENMP)
+    if(MSVC)
+        target_compile_options(mpm_smoke PRIVATE
+            $<$<COMPILE_LANGUAGE:CXX>:/openmp:llvm>
+            $<$<COMPILE_LANGUAGE:CUDA>:-Xcompiler=/openmp:llvm>
+        )
+    endif()
 endif()
 
 # CUDA sources if enabled
 if(USE_CUDA)
+    # Target Ada/Lovelace (RTX 40-series); fallback to PTX if unknown
+    set(CMAKE_CUDA_ARCHITECTURES 89)
     target_sources(mpm_smoke PRIVATE
         src/gpu/mpm_kernels.cu
         src/gpu/smoke_kernels.cu

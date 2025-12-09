@@ -1,0 +1,150 @@
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\1660CBF4BCCAF5BE61EEB134D7A3A9C4\GLM-POPULATE-MKDIR.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -Dcfgdir=/Debug -P C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/tmp/glm-populate-mkdirs.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/Debug/glm-populate-mkdir
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\1660CBF4BCCAF5BE61EEB134D7A3A9C4\GLM-POPULATE-DOWNLOAD.RULE
+setlocal
+cd C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/tmp/glm-populate-gitclone.cmake
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/Debug/glm-populate-download
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\1660CBF4BCCAF5BE61EEB134D7A3A9C4\GLM-POPULATE-UPDATE.RULE
+setlocal
+cd C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glm-src
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -Dcan_fetch=YES -DCMAKE_MESSAGE_LOG_LEVEL=VERBOSE -P C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/tmp/glm-populate-gitupdate.cmake
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\1660CBF4BCCAF5BE61EEB134D7A3A9C4\GLM-POPULATE-PATCH.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/Debug/glm-populate-patch
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\1660CBF4BCCAF5BE61EEB134D7A3A9C4\GLM-POPULATE-CONFIGURE.RULE
+setlocal
+cd C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glm-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/Debug/glm-populate-configure
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\1660CBF4BCCAF5BE61EEB134D7A3A9C4\GLM-POPULATE-BUILD.RULE
+setlocal
+cd C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glm-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/Debug/glm-populate-build
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\1660CBF4BCCAF5BE61EEB134D7A3A9C4\GLM-POPULATE-INSTALL.RULE
+setlocal
+cd C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glm-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/Debug/glm-populate-install
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\1660CBF4BCCAF5BE61EEB134D7A3A9C4\GLM-POPULATE-TEST.RULE
+setlocal
+cd C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-win\_deps\glm-build
+if %errorlevel% neq 0 goto :cmEnd
+C:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E echo_append
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/Debug/glm-populate-test
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\05F41E39D6E3A39BA6F04B20954CDF0B\GLM-POPULATE-COMPLETE.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -E make_directory C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/Debug
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/Debug/glm-populate-complete
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\CMake\bin\cmake.exe" -E touch C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/glm-populate-prefix/src/glm-populate-stamp/Debug/glm-populate-done
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKEFILES\AEC2DE088247866E23F12086F136537E\GLM-POPULATE.RULE
+setlocal
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-WIN\_DEPS\GLM-SUBBUILD\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild -BC:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild --check-stamp-file C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-win/_deps/glm-subbuild/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

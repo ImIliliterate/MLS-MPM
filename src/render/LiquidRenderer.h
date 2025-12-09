@@ -11,46 +11,57 @@
 
 /**
  * Renders liquid from MPM simulation
- * - Point sprites for particles
- * - Marching cubes mesh for surface
+ * - Screen-Space Fluid Rendering (SSFR) for smooth surfaces
+ * - Point sprites fallback
+ * - Marching cubes mesh (CPU)
  */
 class LiquidRenderer {
 public:
     enum class RenderMode {
-        Points,
-        Mesh
+        Points,      // Basic point sprites
+        SSFR,        // Screen-space fluid rendering (smooth!)
+        Mesh         // Marching cubes mesh
     };
     
-    RenderMode mode = RenderMode::Points;
+    RenderMode mode = RenderMode::SSFR;  // Default to smooth GPU rendering
     
     // Point rendering parameters
     float pointSize = 4.0f;
-    glm::vec3 pointColor{0.15f, 0.45f, 0.85f};  // Nice water blue
+    glm::vec3 pointColor{0.15f, 0.45f, 0.85f};
+    
+    // SSFR parameters (NUCLEAR - 3x FAT PARTICLES)
+    float ssfrPointScale = 300.0f;   // 3x LARGER spheres - MASSIVE overlap
+    float ssfrBlurScale = 0.04f;     // EXTREME blur - particles become smooth blob
+    int ssfrBlurIterations = 5;      // Max passes for liquid mercury surface
+    float ssfrThickness = 0.02f;     // Fluid thickness for refraction
+    glm::vec3 ssfrColor{0.1f, 0.4f, 0.8f};        // Deep water color
+    glm::vec3 ssfrSpecular{1.0f, 1.0f, 1.0f};     // Specular highlight
+    float ssfrShininess = 256.0f;
+    float ssfrFresnelPower = 4.0f;
     
     // Mesh rendering parameters
-    float isoLevel = 0.5f;  // Adjust based on particle density
-    glm::vec3 meshColor{0.1f, 0.35f, 0.7f};  // Deeper water blue
-    float shininess = 128.0f;  // Higher for sharper highlights
-    float fresnel = 0.7f;  // More rim lighting for watery look
+    float isoLevel = 0.5f;
+    glm::vec3 meshColor{0.1f, 0.35f, 0.7f};
+    float shininess = 128.0f;
+    float fresnel = 0.7f;
     
     LiquidRenderer();
     ~LiquidRenderer();
     
-    // Initialize rendering resources
     bool init();
     void cleanup();
     
-    // Update particle data from simulation
     void updateParticles(const std::vector<Particle>& particles);
-    
-    // Generate mesh from particles using marching cubes
+    void updatePositions(const std::vector<glm::vec3>& positions);
     void generateMesh(const MpmSim& sim, float isoLevel = 0.5f);
     
-    // Render the liquid
     void render(const glm::mat4& view, const glm::mat4& projection, 
-                const glm::vec3& cameraPos, const glm::vec3& lightDir);
+                const glm::vec3& cameraPos, const glm::vec3& lightDir,
+                int viewportWidth = 1280, int viewportHeight = 720);
     
-    // Get particle count
+    // Resize SSFR framebuffers when window size changes
+    void resizeSSFR(int width, int height);
+    
     size_t getParticleCount() const { return particleCount; }
     size_t getTriangleCount() const { return triangleCount; }
     
@@ -60,6 +71,26 @@ private:
     GLuint pointVBO = 0;
     size_t particleCount = 0;
     Shader pointShader;
+    
+    // SSFR rendering
+    int ssfrWidth = 0, ssfrHeight = 0;
+    GLuint ssfrDepthFBO = 0;      // Framebuffer for depth pass
+    GLuint ssfrDepthTex = 0;      // Depth texture
+    GLuint ssfrBlurFBO = 0;       // Framebuffer for blur pass
+    GLuint ssfrBlurTex = 0;       // Blurred depth texture
+    GLuint ssfrThickFBO = 0;      // Thickness accumulation
+    GLuint ssfrThickTex = 0;      // Thickness texture
+    GLuint ssfrQuadVAO = 0;       // Fullscreen quad
+    GLuint ssfrQuadVBO = 0;
+    Shader ssfrDepthShader;       // Render particle depths
+    Shader ssfrBlurShader;        // Bilateral blur
+    Shader ssfrCompositeShader;   // Final composite with normals & shading
+    
+    bool initSSFR();
+    void cleanupSSFR();
+    void renderSSFR(const glm::mat4& view, const glm::mat4& projection,
+                    const glm::vec3& cameraPos, const glm::vec3& lightDir,
+                    int viewportWidth, int viewportHeight);
     
     // Mesh rendering
     GLuint meshVAO = 0;
@@ -75,12 +106,10 @@ private:
     float fieldDx = 0.0f;
     glm::vec3 fieldMin{0.0f};
     
-    // Marching cubes helpers
     void buildScalarField(const MpmSim& sim);
     void marchingCubes();
     
-    // Mesh data
-    std::vector<float> meshVertices;  // pos.xyz, normal.xyz
+    std::vector<float> meshVertices;
     std::vector<unsigned int> meshIndices;
     
     bool initPointRendering();
