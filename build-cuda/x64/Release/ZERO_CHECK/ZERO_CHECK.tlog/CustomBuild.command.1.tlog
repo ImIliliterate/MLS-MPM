@@ -1,0 +1,10 @@
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-CUDA\CMAKEFILES\91490A6975A86D87CE343090D61BB2B1\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM -BC:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/MpmSmokeSim.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

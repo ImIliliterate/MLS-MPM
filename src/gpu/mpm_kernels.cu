@@ -239,7 +239,12 @@ __global__ void p2gKernel(
     const ParticleGPU& p = particles[idx];
     float invDx = 1.0f / dx;
 
-    float3 rel = (p.x - worldMin) * invDx;
+    // Compute relative position (CUDA float3 needs component-wise math)
+    float3 rel;
+    rel.x = (p.x.x - worldMin.x) * invDx;
+    rel.y = (p.x.y - worldMin.y) * invDx;
+    rel.z = (p.x.z - worldMin.z) * invDx;
+    
     int baseX = static_cast<int>(floorf(rel.x - 0.5f));
     int baseY = static_cast<int>(floorf(rel.y - 0.5f));
     int baseZ = static_cast<int>(floorf(rel.z - 0.5f));
@@ -258,26 +263,33 @@ __global__ void p2gKernel(
                        0.5f * (fx.y - 0.5f)*(fx.y - 0.5f),
                        0.5f * (fx.z - 0.5f)*(fx.z - 0.5f));
 
-    // Compute stress (TRUE FLUID: pressure-only, NO shear)
-    // For fluids: stress = -p * I, where p = K * (J - 1)
-    // K is bulk stiffness (from params.E), NOT elastic modulus
+    // Compute stress for FLUID (MLS-MPM, Hu et al. 2018)
+    // Equation of state: p = K * (1 - J) where J = det(F)
+    // When compressed (J < 1): p > 0 (positive pressure pushes outward)
+    // When expanded (J > 1): p < 0 (negative pressure pulls inward)
+    // Cauchy stress: σ = -p * I
+    
     float J = det3(p.F);
-    J = fmaxf(J, 0.1f);  // Clamp to prevent negative volumes
-    J = fminf(J, 2.0f);  // Also clamp expansion
+    J = fmaxf(J, 0.1f);   // Prevent singularity
+    J = fminf(J, 2.0f);   // Prevent extreme expansion
     
-    // Pure pressure response - NO shear modulus contribution
-    // Using E as a simple bulk stiffness parameter (not Young's modulus)
-    float bulkStiffness = p.E;  // Direct stiffness, no mu contamination
-    float pressure = bulkStiffness * (J - 1.0f);
+    // Bulk modulus from particle (set from g_params.bulkModulus)
+    float K = p.E;
     
-    // ============== PRESSURE CLAMP (CFL SAFETY) ==============
-    // Prevents explosive forces from extreme compression/expansion
-    const float MAX_PRESSURE = 5000.0f;  // Pa - conservative limit
+    // Tait-style equation of state (common for water in SPH/MPM)
+    // p = K * (1 - J) is linear approximation
+    // For more incompressible: p = K * ((1/J)^gamma - 1), gamma=7 for water
+    float pressure = K * (1.0f - J);
+    
+    // Clamp pressure to prevent instability
+    const float MAX_PRESSURE = 10000.0f;
     pressure = fmaxf(-MAX_PRESSURE, fminf(MAX_PRESSURE, pressure));
     
-    // Isotropic stress tensor (fluid has no shear resistance)
+    // Cauchy stress: σ = -p * I (isotropic, no shear for fluid)
     float stress[9] = {0};
-    stress[0] = -pressure; stress[4] = -pressure; stress[8] = -pressure;
+    stress[0] = -pressure; 
+    stress[4] = -pressure; 
+    stress[8] = -pressure;
 
     float coeff = -dt * 4.0f * invDx * invDx * p.volume0;
     float affine[9];
@@ -341,22 +353,14 @@ __global__ void gridUpdateKernel(
     int j = rem / Nx;
     int i = rem - j * Nx;
 
-    // ============== CORRECT GRID-BASED BOUNDARY CONDITIONS ==============
-    // All collision handling happens HERE on the grid, not on particles!
     float boundaryDist = 3.0f * dx;
     float x = worldMin.x + i * dx;
     float y = worldMin.y + j * dx;
     float z = worldMin.z + k * dx;
     
-    // Sticky friction coefficient for floor (prevents sliding/clustering)
-    const float floorFriction = 0.3f;  // Strong friction on floor
-
-    // Floor boundary (Y min) - with sticky friction
+    // Floor boundary (Y min)
     if (y < worldMin.y + boundaryDist) {
-        if (node.vel.y < 0.0f) node.vel.y = 0.0f;  // No penetration
-        // Apply tangential friction to prevent sliding
-        node.vel.x *= floorFriction;
-        node.vel.z *= floorFriction;
+        if (node.vel.y < 0.0f) node.vel.y = 0.0f;
     }
     // Ceiling boundary (Y max)
     if (y > worldMax.y - boundaryDist) {
@@ -377,9 +381,8 @@ __global__ void gridUpdateKernel(
         if (node.vel.z > 0.0f) node.vel.z = 0.0f;
     }
 
-    // ============== HARD VELOCITY CLAMP (CFL SAFETY) ==============
-    // AGGRESSIVE: 10 m/s max prevents ALL explosions regardless of stiffness/coupling
-    const float MAX_GRID_SPEED = 10.0f;
+    // Velocity clamp for stability
+    const float MAX_GRID_SPEED = 8.0f;
     float speed = sqrtf(node.vel.x*node.vel.x + node.vel.y*node.vel.y + node.vel.z*node.vel.z);
     if (speed > MAX_GRID_SPEED) {
         float scale = MAX_GRID_SPEED / speed;
@@ -391,6 +394,7 @@ __global__ void gridUpdateKernel(
     node.velNew = node.vel;
     node.vel = velOld;  // Store old for FLIP
 }
+
 
 __global__ void g2pKernel(
     ParticleGPU* particles, int numParticles,
@@ -404,7 +408,12 @@ __global__ void g2pKernel(
     ParticleGPU& p = particles[idx];
     float invDx = 1.0f / dx;
 
-    float3 rel = (p.x - worldMin) * invDx;
+    // Compute relative position (component-wise for CUDA)
+    float3 rel;
+    rel.x = (p.x.x - worldMin.x) * invDx;
+    rel.y = (p.x.y - worldMin.y) * invDx;
+    rel.z = (p.x.z - worldMin.z) * invDx;
+    
     int baseX = static_cast<int>(floorf(rel.x - 0.5f));
     int baseY = static_cast<int>(floorf(rel.y - 0.5f));
     int baseZ = static_cast<int>(floorf(rel.z - 0.5f));
@@ -461,8 +470,7 @@ __global__ void g2pKernel(
     p.v = velFLIP * flipRatio + velPIC * (1.0f - flipRatio);
 
     // ============== HARD VELOCITY CLAMP (CFL SAFETY) ==============
-    // AGGRESSIVE: 10 m/s max - matches grid clamp, prevents ALL explosions
-    const float MAX_PARTICLE_SPEED = 10.0f;  // m/s - hard limit
+    const float MAX_PARTICLE_SPEED = 5.0f;  // m/s - conservative limit
     
     // NaN/Inf check - reset to safe values if corrupted
     if (isnan(p.v.x) || isnan(p.v.y) || isnan(p.v.z) ||
@@ -478,8 +486,10 @@ __global__ void g2pKernel(
         p.v.z *= scale;
     }
 
-    // Update position
-    p.x = p.x + p.v * dt;
+    // Update position (component-wise for CUDA)
+    p.x.x = p.x.x + p.v.x * dt;
+    p.x.y = p.x.y + p.v.y * dt;
+    p.x.z = p.x.z + p.v.z * dt;
 
     // Update deformation gradient
     float Iplus[9];
@@ -489,9 +499,12 @@ __global__ void g2pKernel(
     float newF[9];
     mat3Mul(Iplus, p.F, newF);
 
-    // For fluid: reset F to preserve volume ratio
+    // For fluid: compute J (volume ratio), then reset F to isotropic
+    // This removes shear (jelly) but KEEPS volume for pressure computation
     float J = det3(newF);
-    J = fminf(fmaxf(J, 0.6f), 1.5f);
+    J = fminf(fmaxf(J, 0.8f), 1.2f);  // Clamp for stability
+    
+    // Reset F to cbrt(J) * I - isotropic, no shear, but preserves volume ratio
     float cbrtJ = cbrtf(J);
     for (int i = 0; i < 9; i++) p.F[i] = 0.0f;
     p.F[0] = cbrtJ; p.F[4] = cbrtJ; p.F[8] = cbrtJ;
@@ -662,6 +675,17 @@ void mpmCudaStepSimple(
 
     int numParticles = static_cast<int>(particles.size());
     if (numParticles == 0) return;
+    
+    // Debug: print once on first call
+    static bool firstCall = true;
+    if (firstCall) {
+        printf("[CUDA] mpmCudaStepSimple called: %d particles, dt=%.6f, gravity=%.2f\n", 
+               numParticles, dt, gravity);
+        printf("[CUDA] Grid: %dx%dx%d, dx=%.4f\n", Nx, Ny, Nz, dx);
+        printf("[CUDA] World: (%.2f,%.2f,%.2f) to (%.2f,%.2f,%.2f)\n",
+               worldMin.x, worldMin.y, worldMin.z, worldMax.x, worldMax.y, worldMax.z);
+        firstCall = false;
+    }
 
     int gridSize = Nx * Ny * Nz;
 
@@ -710,12 +734,27 @@ void mpmCudaStepSimple(
     float3 wMin = make_float3(worldMin.x, worldMin.y, worldMin.z);
     float3 wMax = make_float3(worldMax.x, worldMax.y, worldMax.z);
 
-    // Run simulation entirely on GPU - NO sync here, let GPU run async
+    // Run simulation entirely on GPU
     clearGridKernel<<<blocksGrid, threads>>>(d_gridBuf, gridSize);
+    cudaError_t err1 = cudaGetLastError();
+    if (err1 != cudaSuccess) printf("clearGrid error: %s\n", cudaGetErrorString(err1));
+    
     p2gKernel<<<blocksP, threads>>>(d_particlesBuf, numParticles, d_gridBuf, Nx, Ny, Nz, dx, dt, apicBlend, wMin);
+    cudaError_t err2 = cudaGetLastError();
+    if (err2 != cudaSuccess) printf("p2g error: %s\n", cudaGetErrorString(err2));
+    
     gridUpdateKernel<<<blocksGrid, threads>>>(d_gridBuf, Nx, Ny, Nz, dx, dt, gravity, wMin, wMax);
+    cudaError_t err3 = cudaGetLastError();
+    if (err3 != cudaSuccess) printf("gridUpdate error: %s\n", cudaGetErrorString(err3));
+    
     g2pKernel<<<blocksP, threads>>>(d_particlesBuf, numParticles, d_gridBuf, Nx, Ny, Nz, dx, dt, flipRatio, wMin, wMax);
-    // Sync happens in mpmCudaGetPositions before downloading
+    cudaError_t err4 = cudaGetLastError();
+    if (err4 != cudaSuccess) printf("g2p error: %s\n", cudaGetErrorString(err4));
+    
+    // Sync and check for any errors
+    cudaDeviceSynchronize();
+    cudaError_t errFinal = cudaGetLastError();
+    if (errFinal != cudaSuccess) printf("CUDA sync error: %s\n", cudaGetErrorString(errFinal));
 }
 
 // Download just positions for rendering (12 bytes per particle vs ~100 bytes)
@@ -767,17 +806,19 @@ void mpmCudaDownloadPositions(std::vector<glm::vec3>& positions, int numParticle
 }
 
 void mpmCudaDownloadParticles(std::vector<Particle>& particles) {
-    int numParticles = s_currentParticles;
-    if (numParticles == 0 || !d_particles) return;
+    // Use the SAME buffers as mpmCudaStepSimple!
+    int numParticles = s_gpuParticleCount;
+    if (numParticles == 0 || !d_particlesBuf) return;
 
-    CUDA_CHECK(cudaStreamSynchronize(s_stream));
-    CUDA_CHECK(cudaMemcpy(h_particles.data(), d_particles, 
-                          numParticles * sizeof(ParticleGPU), cudaMemcpyDeviceToHost));
+    // Download from GPU
+    cudaDeviceSynchronize();
+    cudaMemcpy(h_particlesBuf.data(), d_particlesBuf, 
+               numParticles * sizeof(ParticleGPU), cudaMemcpyDeviceToHost);
 
     particles.resize(numParticles);
     for (int i = 0; i < numParticles; i++) {
         Particle& p = particles[i];
-        const ParticleGPU& gp = h_particles[i];
+        const ParticleGPU& gp = h_particlesBuf[i];
         p.x = glm::vec3(gp.x.x, gp.x.y, gp.x.z);
         p.v = glm::vec3(gp.v.x, gp.v.y, gp.v.z);
         p.mass = gp.mass;

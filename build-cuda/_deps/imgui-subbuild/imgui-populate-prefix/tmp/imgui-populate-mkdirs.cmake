@@ -18,7 +18,7 @@ file(MAKE_DIRECTORY
   "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp"
 )
 
-set(configSubDirs )
+set(configSubDirs Debug)
 foreach(subDir IN LISTS configSubDirs)
     file(MAKE_DIRECTORY "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/imgui-subbuild/imgui-populate-prefix/src/imgui-populate-stamp/${subDir}")
 endforeach()

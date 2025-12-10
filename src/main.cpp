@@ -93,13 +93,13 @@ struct AppState {
     bool showUI = true;
     bool renderLiquid = true;
     bool renderSmoke = true;       // Smoke rendering enabled by default
-    int renderMode = 0;            // 0=SSFR (fast+pretty), 1=Points (debug), 2=Mesh (slow)
+    int renderMode = 2;            // 0=SSFR, 1=Points, 2=Mesh (Zhu & Bridson surface)
     
     // Performance settings
     bool performanceMode = false;  // OFF by default - full features
-    bool enableCohesion = false;
+    bool enableCohesion = false;   // OFF for now - focus on rendering
     bool enableSmokeSimulation = true;   // Smoke enabled by default
-    int substeps = 4;  // NUCLEAR: 4 substeps with dt=0.001 for stability
+    int substeps = 4;  // Standard substeps
     
     // Stats
     float mpmTime = 0.0f;
@@ -189,29 +189,25 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 void initSimulation(DemoScene scene) {
-    // Phase 1: Apply resolution preset for good PPC
+    // Resolution and performance settings
+    g_params.fluidPreset = FluidPreset::Coarse;  // 48^3 grid
+    g_params.particleSpacingFactor = 0.5f;
+    g_app.substeps = 6;
+    g_params.enableCohesion = false;
+    
 #ifdef USE_CUDA
-    // GPU path: high particle density for smooth fluid
-    if (!g_app.performanceMode) {
-        g_params.fluidPreset = FluidPreset::Default;  // 64^3 grid
-        g_params.particleSpacingFactor = 0.35f;  // ~23 PPC for smooth surface
-        g_app.substeps = 4;  // NUCLEAR: 4 substeps with low stiffness = stable
-    } else {
-        g_params.fluidPreset = FluidPreset::Coarse;  // 48^3 grid  
-        g_params.particleSpacingFactor = 0.5f;  // ~8 PPC (faster)
-        g_app.substeps = 3;  // Performance mode
-    }
-    // GPU smoke solver - disable in performance mode
-    g_app.renderSmoke = !g_app.performanceMode;
-    g_params.enableSmokeSimulation = !g_app.performanceMode;
-    g_params.enableCoupling = !g_app.performanceMode;
+    // GPU settings - higher quality
+    g_params.fluidPreset = FluidPreset::Default;  // 64^3
+    g_params.particleSpacingFactor = 0.6f;  // dx*0.6 = ~4.6x more particles, target Active PPC 3-5
+    g_app.substeps = 4;  // Balanced
+    g_app.renderSmoke = true;
+    g_params.enableSmokeSimulation = true;
+    g_params.enableCoupling = true;
 #else
-    // CPU mode: use lighter settings
-    if (g_app.performanceMode) {
-        g_params.fluidPreset = FluidPreset::Coarse;
-        g_app.substeps = 2;
-        g_params.particleSpacingFactor = 0.75f;
-    }
+    // CPU: disable smoke for performance
+    g_app.renderSmoke = false;
+    g_params.enableSmokeSimulation = false;
+    g_params.enableCoupling = false;
 #endif
     g_params.skipDiagnosticsEveryFrame = true;
     g_params.diagnosticsInterval = 30;
@@ -237,6 +233,16 @@ void initSimulation(DemoScene scene) {
     // Enable GPU smoke solver
     g_app.smoke.useGPU = true;
     g_app.smoke.initGPU();
+    
+    // Create visible GROUND FOG LAYER
+    // Multiple overlapping spheres at floor level
+    for (float x = 0.1f; x <= 0.9f; x += 0.2f) {
+        for (float z = 0.1f; z <= 0.9f; z += 0.2f) {
+            g_app.smoke.addDensity(glm::vec3(x, 0.08f, z), 0.4f, 0.15f);
+        }
+    }
+    // Extra dense center
+    g_app.smoke.addDensity(glm::vec3(0.5f, 0.1f, 0.5f), 0.6f, 0.25f);
 #endif
     
     g_app.coupling.init(&g_app.mpm, &g_app.smoke);
@@ -258,8 +264,8 @@ void initSimulation(DemoScene scene) {
     g_app.liquidRenderer.pointSize = 1.5f;  // Fine spray look (less grainy)
     g_app.liquidRenderer.isoLevel = g_params.isoThreshold;
     
-    // Use SSFR for fast GPU-accelerated smooth fluid rendering
-    g_app.renderMode = 0;  // SSFR (fast + pretty)
+    // Use Mesh mode for proper Zhu & Bridson surface reconstruction
+    g_app.renderMode = 2;  // Mesh (marching cubes)
     
     switch (scene) {
         case DemoScene::FallingBlock: {
@@ -369,6 +375,7 @@ void simulationStep(float dt) {
     g_app.mpm.gravity = g_params.gravity;
     g_app.mpm.flipRatio = g_params.flipRatio;
     g_app.coupling.enabled = g_params.enableCoupling;
+    g_app.enableCohesion = g_params.enableCohesion;  // Keep UI in sync
     
     for (int i = 0; i < numSubsteps; i++) {
         // MPM step
@@ -377,51 +384,50 @@ void simulationStep(float dt) {
         auto mpmEnd = std::chrono::high_resolution_clock::now();
         g_app.mpmTime = std::chrono::duration<float, std::milli>(mpmEnd - mpmStart).count();
         
-        // Smoke step (can be disabled for performance)
-        auto smokeStart = std::chrono::high_resolution_clock::now();
-        
-        if (g_params.enableSmokeSimulation) {
-        // Scene-specific smoke sources (tuned for stability)
-        switch (g_app.currentScene) {
-            case DemoScene::FallingBlock:
-                // LIGHT GROUND FOG: Thin layer for performance
-                // (Use denser fog only for final renders)
-                for (float x = 0.1f; x < 0.9f; x += 0.15f) {
-                    for (float z = 0.1f; z < 0.9f; z += 0.15f) {
-                        g_app.smoke.addDensity(glm::vec3(x, 0.1f, z), 0.5f, 0.1f);
-                    }
-                }
-                break;
-                
-            case DemoScene::BoilingCauldron:
-                // Gentle heat source - prevents runaway velocities
-                g_app.smoke.addTemperature(glm::vec3(0.5f, 0.1f, 0.5f), 0.3f, 0.15f);
-                g_app.smoke.addDensity(glm::vec3(0.5f, 0.15f, 0.5f), 0.5f, 0.12f);
-                break;
-                
-            case DemoScene::FanTest:
-                // Moderate wind from left side
-                g_app.smoke.addVelocity(glm::vec3(0.0f, 0.3f, 0.5f), 
-                                        glm::vec3(2.0f, 0.0f, 0.0f), 0.2f);
-                g_app.smoke.addDensity(glm::vec3(0.1f, 0.3f, 0.5f), 0.5f, 0.1f);
-                break;
-                
-            default:
-                break;
+        // Coupling FIRST - inject density/velocity from water impacts
+        if (g_app.coupling.enabled) {
+            g_app.coupling.apply(subDt);
         }
         
-        g_app.smoke.step(subDt);
+        // Smoke step - only on LAST substep (after all coupling injections)
+        auto smokeStart = std::chrono::high_resolution_clock::now();
+        
+        if (g_params.enableSmokeSimulation && i == numSubsteps - 1) {
+            // Scene-specific smoke sources
+            switch (g_app.currentScene) {
+                case DemoScene::FallingBlock:
+                    // Continuous ground fog layer that water will blast through
+                    for (float x = 0.2f; x <= 0.8f; x += 0.3f) {
+                        for (float z = 0.2f; z <= 0.8f; z += 0.3f) {
+                            g_app.smoke.addDensity(glm::vec3(x, 0.06f, z), 0.15f, 0.1f);
+                        }
+                    }
+                    break;
+                    
+                case DemoScene::BoilingCauldron:
+                    // Gentle heat source - prevents runaway velocities
+                    g_app.smoke.addTemperature(glm::vec3(0.5f, 0.1f, 0.5f), 0.3f, 0.15f);
+                    g_app.smoke.addDensity(glm::vec3(0.5f, 0.15f, 0.5f), 0.5f, 0.12f);
+                    break;
+                    
+                case DemoScene::FanTest:
+                    // Moderate wind from left side
+                    g_app.smoke.addVelocity(glm::vec3(0.0f, 0.3f, 0.5f), 
+                                            glm::vec3(2.0f, 0.0f, 0.0f), 0.2f);
+                    g_app.smoke.addDensity(glm::vec3(0.1f, 0.3f, 0.5f), 0.5f, 0.1f);
+                    break;
+                    
+                default:
+                    break;
+            }
+            
+            g_app.smoke.step(subDt * numSubsteps);  // Larger dt since we only step once
             
             // Update smoke diagnostics
             g_params.maxSmokeSpeed = g_app.smoke.getMaxSpeed();
         }
         auto smokeEnd = std::chrono::high_resolution_clock::now();
         g_app.smokeTime = std::chrono::duration<float, std::milli>(smokeEnd - smokeStart).count();
-        
-        // Coupling
-        if (g_app.coupling.enabled) {
-            g_app.coupling.apply(subDt);
-        }
     }
     
     g_app.simTime += dt;
@@ -463,7 +469,7 @@ void render() {
             // (Mesh changes slowly enough that this is nearly invisible)
             static int meshFrameCounter = 0;
             meshFrameCounter++;
-            if (meshFrameCounter % 3 == 0) {
+            if (meshFrameCounter % 4 == 0) {  // Every 4 frames for better perf
                 g_app.mpm.syncParticlesToCpu();
                 g_app.liquidRenderer.generateMesh(g_app.mpm, g_params.isoThreshold);
             }
@@ -670,9 +676,17 @@ void renderUI() {
         ImGui::Combo("Render Mode", &g_app.renderMode, renderModes, 3);
         
         if (g_app.renderMode == 0) {  // SSFR mode
-            ImGui::SliderFloat("SSFR Point Scale", &g_app.liquidRenderer.ssfrPointScale, 20.0f, 120.0f);
-            ImGui::SliderInt("SSFR Blur Iters", &g_app.liquidRenderer.ssfrBlurIterations, 1, 4);
-            ImGui::SliderFloat("SSFR Blur Scale", &g_app.liquidRenderer.ssfrBlurScale, 0.001f, 0.02f);
+            ImGui::Text("Curvature Flow Smoothing:");
+            ImGui::SliderFloat("Particle Radius", &g_app.liquidRenderer.ssfrParticleRadius, 0.02f, 0.06f);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Larger = more overlap = smoother");
+            ImGui::SliderFloat("Point Scale", &g_app.liquidRenderer.ssfrPointScale, 800.0f, 2500.0f);
+            ImGui::SliderInt("Smooth Iterations", &g_app.liquidRenderer.ssfrSmoothIterations, 10, 60);
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("More = smoother surface (costs perf)");
+            ImGui::SliderFloat("Smooth Rate", &g_app.liquidRenderer.ssfrSmoothDt, 0.0001f, 0.001f, "%.4f");
+            ImGui::Separator();
+            ImGui::Text("Water Shading:");
+            ImGui::SliderFloat("Fresnel Power", &g_app.liquidRenderer.ssfrFresnelPower, 1.0f, 8.0f);
+            ImGui::SliderFloat("Thickness", &g_app.liquidRenderer.ssfrThicknessScale, 1.0f, 10.0f);
         }
         if (g_app.renderMode == 2) {  // Mesh mode
             ImGui::SliderFloat("Iso Level", &g_params.isoThreshold, 0.1f, 2.0f);
@@ -687,16 +701,24 @@ void renderUI() {
         if (ImGui::CollapsingHeader("Performance")) {
             if (ImGui::Checkbox("Performance Mode", &g_app.performanceMode)) {
                 if (g_app.performanceMode) {
-                    g_app.renderMode = 0;  // SSFR (fast + pretty)
+                    g_app.renderMode = 2;  // Keep Mesh mode
                     g_params.enableCohesion = false;
                     g_params.enableSmokeSimulation = false;
+                    g_params.enableGridSmoothing = false;
+                } else {
+                    g_params.enableCohesion = true;  // Re-enable for quality
+                    g_params.enableGridSmoothing = true;
                 }
             }
             if (ImGui::IsItemHovered()) {
                 ImGui::SetTooltip("Quick toggle for laptop-friendly settings");
             }
             ImGui::Checkbox("Surface Tension", &g_params.enableCohesion);
-            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Expensive particle-particle forces");
+            if (ImGui::IsItemHovered()) ImGui::SetTooltip("Keeps liquid together - essential for water look!");
+            if (g_params.enableCohesion) {
+                ImGui::SliderFloat("Cohesion Strength", &g_params.cohesionStrength, 100.0f, 1500.0f);
+                if (ImGui::IsItemHovered()) ImGui::SetTooltip("Higher = more surface tension");
+            }
             ImGui::Checkbox("Smoke Simulation", &g_params.enableSmokeSimulation);
         }
         

@@ -23,27 +23,31 @@ public:
         Mesh         // Marching cubes mesh
     };
     
-    RenderMode mode = RenderMode::SSFR;  // Default to smooth GPU rendering
+    RenderMode mode = RenderMode::Mesh;  // Default to marching cubes mesh (Zhu & Bridson)
     
     // Point rendering parameters
     float pointSize = 4.0f;
     glm::vec3 pointColor{0.15f, 0.45f, 0.85f};
     
-    // SSFR parameters (NUCLEAR - 3x FAT PARTICLES)
-    float ssfrPointScale = 300.0f;   // 3x LARGER spheres - MASSIVE overlap
-    float ssfrBlurScale = 0.04f;     // EXTREME blur - particles become smooth blob
-    int ssfrBlurIterations = 5;      // Max passes for liquid mercury surface
-    float ssfrThickness = 0.02f;     // Fluid thickness for refraction
-    glm::vec3 ssfrColor{0.1f, 0.4f, 0.8f};        // Deep water color
-    glm::vec3 ssfrSpecular{1.0f, 1.0f, 1.0f};     // Specular highlight
-    float ssfrShininess = 256.0f;
-    float ssfrFresnelPower = 4.0f;
+    // SSFR parameters - particles must overlap to look like fluid
+    float ssfrPointScale = 3000.0f;  // Large enough to overlap
+    float ssfrParticleRadius = 0.07f; // Must be > particle spacing for overlap
+    int ssfrSmoothIterations = 20;   // Smooth out seams
+    float ssfrSmoothDt = 0.004f;     // Fill gaps between particles
+    glm::vec3 ssfrWaterColor{0.05f, 0.2f, 0.4f};      // Deep water color
+    glm::vec3 ssfrSurfaceColor{0.3f, 0.6f, 0.85f};    // Surface/shallow color (brighter)
+    glm::vec3 ssfrSpecular{1.0f, 1.0f, 1.0f};         // Specular highlight
+    float ssfrShininess = 400.0f;                     // Very sharp water specular
+    float ssfrFresnelBias = 0.04f;                    // Slight base reflectivity
+    float ssfrFresnelScale = 0.96f;                   // Strong fresnel
+    float ssfrFresnelPower = 4.0f;                    // Fresnel curve
+    float ssfrThicknessScale = 2.5f;                  // Depth-based absorption
     
     // Mesh rendering parameters
     float isoLevel = 0.5f;
-    glm::vec3 meshColor{0.1f, 0.35f, 0.7f};
-    float shininess = 128.0f;
-    float fresnel = 0.7f;
+    glm::vec3 meshColor{0.05f, 0.25f, 0.6f};  // Water color as specified
+    float shininess = 64.0f;
+    float fresnel = 1.0f;
     
     LiquidRenderer();
     ~LiquidRenderer();
@@ -83,6 +87,7 @@ private:
     GLuint ssfrQuadVAO = 0;       // Fullscreen quad
     GLuint ssfrQuadVBO = 0;
     Shader ssfrDepthShader;       // Render particle depths
+    Shader ssfrThickShader;       // Render thickness (additive)
     Shader ssfrBlurShader;        // Bilateral blur
     Shader ssfrCompositeShader;   // Final composite with normals & shading
     

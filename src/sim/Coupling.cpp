@@ -48,12 +48,16 @@ void Coupling::apply(float dt) {
                 );
             }
             
-            // Liquid → Smoke: DISABLED for performance
-            // The atomic contention from 100k particles writing to same grid cells
-            // is a massive bottleneck. Re-enable only for final renders.
-            // if (liquidToSmoke && (frameCounter % 4 == 0)) {
-            //     smokeCudaApplyParticlesToSmoke(...);
-            // }
+            // Liquid → Smoke: EXPLOSIVE splash plumes on impact
+            // Run EVERY FRAME for maximum reactivity
+            if (liquidToSmoke) {
+                smokeCudaApplyParticlesToSmoke(
+                    d_particles,
+                    numParticles,
+                    worldMin, dx,
+                    g_params.sprayDensityGain  // Full strength
+                );
+            }
         }
         return;  // Skip CPU path
     }

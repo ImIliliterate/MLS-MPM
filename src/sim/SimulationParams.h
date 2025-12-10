@@ -26,38 +26,38 @@ enum class QualityPreset {
 };
 
 struct SimulationParams {
-    // ==================== BALANCED FLUID ====================
+    // ==================== FLUID PARAMETERS ====================
     int liquidGridRes = 64;
-    float particleSpacingFactor = 0.4f;
-    float dt = 0.001f;                 // NUCLEAR: Larger timestep works with low stiffness
-    float maxDt = 0.001f;
-    float cflNumber = 0.3f;
+    float particleSpacingFactor = 0.6f; // dx*0.6 = target Active PPC 3-5
+    float dt = 0.001f;
+    float maxDt = 0.002f;
+    float cflNumber = 0.4f;
     float worldSize = 1.0f;
     
-    FluidPreset fluidPreset = FluidPreset::Coarse;
+    FluidPreset fluidPreset = FluidPreset::Default;  // 64^3 grid
     QualityPreset qualityPreset = QualityPreset::Balanced;
     
-    // ==================== Iteration 3: FLIP/PIC (98% FLIP) ====================
+    // ==================== FLIP/PIC ====================
     float gravity = -9.8f;
-    float flipRatio = 0.98f;           // Iteration 3: 98% FLIP, only 2% PIC
+    float flipRatio = 0.95f;           // 95% FLIP - less bouncy, more damped
     float apicBlend = 1.0f;            // Full APIC - preserves angular momentum
     
-    // ==================== BALANCED: Cohesive but stiff ====================
+    // ==================== INCOMPRESSIBILITY ====================
     bool enablePressure = true;
     float restDensity = 1000.0f;
-    float stiffnessK = 2000.0f;        // Very low - guarantees CFL stability
+    float stiffnessK = 500.0f;         // Lower = flows more freely
     
-    // ==================== Iteration 3: Viscosity = ZERO ====================
-    float viscosityBlend = 0.0f;       // Iteration 3: ZERO
-    float damping = 0.0f;              // Iteration 3: ZERO (no velocity decay)
-    bool enableGridSmoothing = false;  // Iteration 3: OFF
+    // ==================== VISCOSITY ====================
+    float viscosityBlend = 0.0f;       // No viscosity - water is inviscid
+    float damping = 0.0f;              // No global damping
+    bool enableGridSmoothing = false;  // Off for water
     int gridSmoothingIterations = 0;
     
     // ==================== Iteration 5: Meshing (sharper with more particles) ====================
-    // With higher particle density, use tighter kernel for sharper surface
-    float isoThreshold = 0.6f;         // Higher = tighter/sharper surface
-    float smoothingRadius = 1.5f;      // Tighter kernel = 1.5*dx (was 2.0)
-    int smoothingIterations = 2;       // 2 passes
+    // Meshing: Zhu & Bridson style surface reconstruction
+    float isoThreshold = 0.5f;         // Middle value for smooth surface
+    float smoothingRadius = 2.0f;      // 2*dx (now hardcoded in buildScalarField)
+    int smoothingIterations = 2;       // 2 passes as specified
     float meshAnisotropy = 0.2f;       // Less anisotropy for finer detail
     bool fastMeshing = true;
     float particleRenderRadius = 0.4f; // Smaller render radius with more particles
@@ -72,19 +72,19 @@ struct SimulationParams {
     int surfaceNeighborThreshold = 20;
     
     // ==================== Liquid → Smoke ====================
-    float liquidVelocityBlend = 0.5f;
-    float sprayDensityGain = 5.0f;
-    float splashVelocityThreshold = 2.0f;
+    float liquidVelocityBlend = 1.0f;
+    float sprayDensityGain = 100000.0f;     // INSANE - 100x
+    float splashVelocityThreshold = 0.01f;  // Hyper sensitive
     
     // ==================== Smoke Grid ====================
-    int smokeGridRes = 16;             // Cheaper smoke grid default
-    float smokeViscosity = 0.0001f;
-    float smokeBuoyancy = 1.0f;
-    float smokeDissipation = 0.995f;
+    int smokeGridRes = 48;             // Good detail
+    float smokeViscosity = 0.0f;       // ZERO = maximum turbulence
+    float smokeBuoyancy = 50.0f;       // EXTREME buoyancy = rockets up fast
+    float smokeDissipation = 0.995f;   // Slower dissipation so we see it
     
     // ==================== Performance ====================
-    int substeps = 8;                  // Balanced for moderate stiffness
-    bool enableCohesion = false;
+    int substeps = 3;                  // Reduced for perf - still stable with CFL
+    bool enableCohesion = false;       // OFF - expensive
     bool enableSmokeSimulation = true;   // ON - GPU smoke solver
     bool enableCoupling = true;          // ON - GPU coupling
     bool adaptiveDt = true;            // ON - CFL-adaptive prevents explosions
@@ -92,9 +92,12 @@ struct SimulationParams {
     bool skipDiagnosticsEveryFrame = true;
     int diagnosticsInterval = 10;
     
-    // Stiffness used by particles - HIGH for incompressible water
-    // CFL-adaptive stepping prevents explosions automatically
-    float bulkModulus = 50000.0f;  // High stiffness = incompressible water
+    // Cohesion / Surface Tension parameters
+    float cohesionStrength = 500.0f;   // How strongly particles attract at surface
+    float surfaceTensionThreshold = 0.7f; // Density threshold for surface detection
+    
+    // Stiffness used by particles - lower = more splashy, higher = more rigid
+    float bulkModulus = 5000.0f;   // Low - allows spreading and splashing
     float poissonRatio = 0.3f;
     
     // ==================== Diagnostics ====================

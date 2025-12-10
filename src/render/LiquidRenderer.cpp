@@ -106,6 +106,7 @@ bool LiquidRenderer::initMeshRendering() {
         }
     )";
     
+    // Exact shader from ChatGPT specification
     const char* fragSrc = R"(
         #version 330 core
         in vec3 vWorldPos;
@@ -116,31 +117,27 @@ bool LiquidRenderer::initMeshRendering() {
         
         uniform vec3 uCameraPos;
         uniform vec3 uLightDir;
-        uniform vec3 uColor;
+        uniform vec3 uColor;  // uWaterColor: e.g. vec3(0.05, 0.25, 0.6)
         uniform float uShininess;
         uniform float uFresnel;
         
         void main() {
             vec3 N = normalize(vNormal);
             vec3 V = normalize(uCameraPos - vWorldPos);
-            vec3 L = normalize(-uLightDir);
-            vec3 H = normalize(V + L);
+            vec3 L = normalize(uLightDir);
             
-            // Ambient
-            float ambient = 0.15;
+            float NdotL = max(dot(N, L), 0.0);
+            float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0);
             
-            // Diffuse
-            float diff = max(dot(N, L), 0.0);
+            vec3 diffuse = uColor * (0.2 + 0.8 * NdotL);
+            vec3 spec = vec3(1.0) * pow(max(dot(reflect(-L, N), V), 0.0), 64.0) * 0.4;
+            vec3 reflectionTint = vec3(0.5, 0.6, 0.7);
             
-            // Specular
-            float spec = pow(max(dot(N, H), 0.0), uShininess);
+            vec3 baseColor = diffuse + spec;
+            vec3 color = mix(baseColor, reflectionTint, fresnel);
             
-            // Fresnel (rim lighting)
-            float fresnel = pow(1.0 - max(dot(N, V), 0.0), 3.0) * uFresnel;
-            
-            vec3 color = uColor * (ambient + diff * 0.7) + vec3(1.0) * spec * 0.5 + vec3(0.3, 0.6, 1.0) * fresnel;
-            
-            FragColor = vec4(color, 0.9);
+            float alpha = 0.9;  // mostly opaque
+            FragColor = vec4(color, alpha);
         }
     )";
     
@@ -298,7 +295,7 @@ bool LiquidRenderer::initSSFR() {
             vRadius = uPointRadius;
             gl_Position = uProj * viewPos;
             // Scale point size by distance for perspective-correct spheres
-            gl_PointSize = uPointScale * uPointRadius / (-viewPos.z);
+            gl_PointSize = uPointScale * uPointRadius / max(-viewPos.z, 0.1);
         }
     )";
     
@@ -335,7 +332,34 @@ bool LiquidRenderer::initSSFR() {
         return false;
     }
     
-    // Bilateral blur shader
+    // Thickness pass shader - outputs sphere thickness for additive blending
+    const char* thickFragSrc = R"(
+        #version 330 core
+        in vec3 vViewPos;
+        in float vRadius;
+        
+        out vec4 FragColor;
+        
+        void main() {
+            // Compute sphere from point coord
+            vec2 coord = gl_PointCoord * 2.0 - 1.0;
+            float r2 = dot(coord, coord);
+            if (r2 > 1.0) discard;
+            
+            // Thickness = full diameter at this slice of the sphere
+            float z = sqrt(1.0 - r2);
+            float thickness = 2.0 * vRadius * z;  // Diameter at this height
+            
+            // Output thickness (will be accumulated additively)
+            FragColor = vec4(thickness, 0.0, 0.0, 1.0);
+        }
+    )";
+    
+    if (!ssfrThickShader.loadFromSource(depthVertSrc, thickFragSrc)) {
+        return false;
+    }
+    
+    // Fullscreen quad vertex shader (shared)
     const char* blurVertSrc = R"(
         #version 330 core
         layout(location = 0) in vec2 aPos;
@@ -347,16 +371,16 @@ bool LiquidRenderer::initSSFR() {
         }
     )";
     
+    // Curvature flow smoothing shader (van der Laan et al.)
+    // Smooths depth field based on mean curvature - much better than bilateral blur
     const char* blurFragSrc = R"(
         #version 330 core
         in vec2 vTexCoord;
         out vec4 FragColor;
         
         uniform sampler2D uDepthTex;
-        uniform vec2 uBlurDir;
-        uniform float uFilterRadius;
-        uniform float uBlurScale;
-        uniform float uBlurDepthFalloff;
+        uniform vec2 uTexelSize;
+        uniform float uDt;  // Smoothing timestep
         
         void main() {
             float depth = texture(uDepthTex, vTexCoord).r;
@@ -365,29 +389,29 @@ bool LiquidRenderer::initSSFR() {
                 return;
             }
             
-            float sum = 0.0;
-            float wsum = 0.0;
+            // Sample neighbors
+            float dxp = texture(uDepthTex, vTexCoord + vec2(uTexelSize.x, 0.0)).r;
+            float dxn = texture(uDepthTex, vTexCoord - vec2(uTexelSize.x, 0.0)).r;
+            float dyp = texture(uDepthTex, vTexCoord + vec2(0.0, uTexelSize.y)).r;
+            float dyn = texture(uDepthTex, vTexCoord - vec2(0.0, uTexelSize.y)).r;
             
-            for (float x = -uFilterRadius; x <= uFilterRadius; x += 1.0) {
-                vec2 offset = x * uBlurDir * uBlurScale;
-                float sample_depth = texture(uDepthTex, vTexCoord + offset).r;
-                
-                if (sample_depth > 0.0) {
-                    // Spatial weight (Gaussian)
-                    float r = x / uFilterRadius;
-                    float w_spatial = exp(-r * r);
-                    
-                    // Range weight (depth similarity)
-                    float diff = (sample_depth - depth) * uBlurDepthFalloff;
-                    float w_range = exp(-diff * diff);
-                    
-                    float w = w_spatial * w_range;
-                    sum += sample_depth * w;
-                    wsum += w;
-                }
-            }
+            // Handle boundaries - use current depth if neighbor is empty
+            if (dxp <= 0.0) dxp = depth;
+            if (dxn <= 0.0) dxn = depth;
+            if (dyp <= 0.0) dyp = depth;
+            if (dyn <= 0.0) dyn = depth;
             
-            FragColor = vec4(wsum > 0.0 ? sum / wsum : depth, 0.0, 0.0, 1.0);
+            // Compute curvature using Laplacian
+            // Mean curvature flow: d/dt(z) = H where H is mean curvature
+            float laplacian = (dxp + dxn + dyp + dyn) - 4.0 * depth;
+            
+            // Update depth based on curvature (explicit Euler)
+            float newDepth = depth + uDt * laplacian;
+            
+            // Keep depth positive
+            newDepth = max(newDepth, 0.001);
+            
+            FragColor = vec4(newDepth, 0.0, 0.0, 1.0);
         }
     )";
     
@@ -395,20 +419,25 @@ bool LiquidRenderer::initSSFR() {
         return false;
     }
     
-    // Composite shader - reconstructs normals and shades
+    // Composite shader - realistic water shading with Fresnel and thickness
     const char* compositeFragSrc = R"(
         #version 330 core
         in vec2 vTexCoord;
         out vec4 FragColor;
         
         uniform sampler2D uDepthTex;
+        uniform sampler2D uThickTex;   // Accumulated thickness
         uniform mat4 uProjInv;
         uniform vec2 uTexelSize;
         uniform vec3 uLightDir;
-        uniform vec3 uFluidColor;
+        uniform vec3 uWaterColor;      // Deep water color
+        uniform vec3 uSurfaceColor;    // Shallow/surface color
         uniform vec3 uSpecularColor;
         uniform float uShininess;
+        uniform float uFresnelBias;
+        uniform float uFresnelScale;
         uniform float uFresnelPower;
+        uniform float uThicknessScale;
         
         vec3 uvToView(vec2 uv, float depth) {
             vec4 clip = vec4(uv * 2.0 - 1.0, 0.0, 1.0);
@@ -419,56 +448,98 @@ bool LiquidRenderer::initSSFR() {
         
         void main() {
             float depth = texture(uDepthTex, vTexCoord).r;
+            float thickness = texture(uThickTex, vTexCoord).r;
             if (depth <= 0.0) discard;
             
-            // Sample neighbors for normal reconstruction
-            float dx = texture(uDepthTex, vTexCoord + vec2(uTexelSize.x, 0.0)).r;
-            float dy = texture(uDepthTex, vTexCoord + vec2(0.0, uTexelSize.y)).r;
+            // Sample neighbors for normal reconstruction (central differences)
+            float dxp = texture(uDepthTex, vTexCoord + vec2(uTexelSize.x, 0.0)).r;
             float dxn = texture(uDepthTex, vTexCoord - vec2(uTexelSize.x, 0.0)).r;
+            float dyp = texture(uDepthTex, vTexCoord + vec2(0.0, uTexelSize.y)).r;
             float dyn = texture(uDepthTex, vTexCoord - vec2(0.0, uTexelSize.y)).r;
-            
-            // Use central differences where possible
-            float ddx = (dx > 0.0 && dxn > 0.0) ? (dx - dxn) * 0.5 :
-                        (dx > 0.0) ? (dx - depth) : (depth - dxn);
-            float ddy = (dy > 0.0 && dyn > 0.0) ? (dy - dyn) * 0.5 :
-                        (dy > 0.0) ? (dy - depth) : (depth - dyn);
             
             // Reconstruct view-space position
             vec3 viewPos = uvToView(vTexCoord, depth);
             
-            // Compute normal from depth gradient
-            vec3 ddxPos = uvToView(vTexCoord + vec2(uTexelSize.x, 0.0), dx) - viewPos;
-            vec3 ddyPos = uvToView(vTexCoord + vec2(0.0, uTexelSize.y), dy) - viewPos;
-            vec3 normal = normalize(cross(ddxPos, ddyPos));
+            // Compute normal from depth gradient using central differences
+            vec3 ddx = uvToView(vTexCoord + vec2(uTexelSize.x, 0.0), dxp > 0.0 ? dxp : depth) -
+                       uvToView(vTexCoord - vec2(uTexelSize.x, 0.0), dxn > 0.0 ? dxn : depth);
+            vec3 ddy = uvToView(vTexCoord + vec2(0.0, uTexelSize.y), dyp > 0.0 ? dyp : depth) -
+                       uvToView(vTexCoord - vec2(0.0, uTexelSize.y), dyn > 0.0 ? dyn : depth);
+            vec3 crossN = cross(ddy, ddx);
+            float len = length(crossN);
+            
+            // Fallback to camera-facing normal if gradient is too small
+            vec3 normal = len > 0.0001 ? crossN / len : vec3(0.0, 0.0, 1.0);
             
             // Ensure normal points toward camera
             if (normal.z < 0.0) normal = -normal;
             
-            // Lighting
-            vec3 lightDir = normalize(-uLightDir);
+            // View and light directions
             vec3 viewDir = normalize(-viewPos);
+            vec3 lightDir = normalize(-uLightDir);
             vec3 halfDir = normalize(lightDir + viewDir);
+            vec3 reflectDir = reflect(-viewDir, normal);
             
-            // Diffuse
-            float diff = max(dot(normal, lightDir), 0.0) * 0.6;
-            float ambient = 0.3;
+            // === FRESNEL (Schlick approximation) ===
+            float NdotV = max(dot(normal, viewDir), 0.0);
+            float fresnel = uFresnelBias + uFresnelScale * pow(1.0 - NdotV, uFresnelPower);
+            fresnel = clamp(fresnel, 0.0, 1.0);
             
-            // Specular (Blinn-Phong)
-            float spec = pow(max(dot(normal, halfDir), 0.0), uShininess);
+            // === WATER COLOR with thickness-based absorption (Beer's Law) ===
+            float thicknessScaled = thickness * uThicknessScale;
+            vec3 absorption = exp(-thicknessScaled * vec3(0.4, 0.1, 0.05)); // Water absorbs red first
+            vec3 waterColor = uSurfaceColor * absorption;
             
-            // Fresnel
-            float fresnel = pow(1.0 - max(dot(normal, viewDir), 0.0), uFresnelPower);
+            // === KEY LIGHT (main sun/directional) ===
+            float NdotL = max(dot(normal, lightDir), 0.0);
+            float wrapLight = NdotL * 0.5 + 0.5; // Wrap lighting for softer look
+            vec3 keyLight = vec3(1.0, 0.95, 0.9) * wrapLight * 0.7;
             
-            // Combine
-            vec3 color = uFluidColor * (ambient + diff);
-            color += uSpecularColor * spec * 0.8;
-            color += vec3(0.4, 0.6, 1.0) * fresnel * 0.5;
+            // === FILL LIGHT (from below/side for depth) ===
+            vec3 fillDir = normalize(vec3(0.5, -0.3, 0.5));
+            float fillNdotL = max(dot(normal, fillDir), 0.0);
+            vec3 fillLight = vec3(0.4, 0.5, 0.7) * fillNdotL * 0.3;
             
-            // Slight depth-based darkening for thickness impression
-            float depthFade = exp(-depth * 0.3);
-            color *= mix(0.7, 1.0, depthFade);
+            // === RIM LIGHT (backlight for silhouette) ===
+            vec3 rimDir = normalize(vec3(0.0, 0.5, -1.0));
+            float rimNdotL = max(dot(normal, rimDir), 0.0);
+            float rim = pow(1.0 - NdotV, 3.0) * rimNdotL;
+            vec3 rimLight = vec3(0.6, 0.8, 1.0) * rim * 0.5;
             
-            FragColor = vec4(color, 0.95);
+            // === SPECULAR (sharp water highlights) ===
+            float NdotH = max(dot(normal, halfDir), 0.0);
+            float specular = pow(NdotH, uShininess);
+            // Secondary specular for fill light
+            vec3 halfFill = normalize(fillDir + viewDir);
+            float specFill = pow(max(dot(normal, halfFill), 0.0), uShininess * 0.5) * 0.3;
+            
+            // === ENVIRONMENT REFLECTION (gradient sky dome) ===
+            float skyBlend = reflectDir.y * 0.5 + 0.5;
+            vec3 skyColor = mix(
+                vec3(0.7, 0.8, 0.95),  // Horizon
+                vec3(0.3, 0.5, 0.9),   // Zenith
+                pow(skyBlend, 0.8)
+            );
+            // Add subtle sun reflection
+            float sunReflect = pow(max(dot(reflectDir, lightDir), 0.0), 64.0);
+            skyColor += vec3(1.0, 0.9, 0.7) * sunReflect * 0.8;
+            
+            // === COMBINE LIGHTING ===
+            vec3 diffuseLight = keyLight + fillLight;
+            vec3 color = waterColor * diffuseLight * (1.0 - fresnel * 0.5);
+            color += skyColor * fresnel * 0.7;  // Environment reflection
+            color += rimLight;                   // Rim/backlight
+            color += uSpecularColor * (specular + specFill) * 1.5;  // Specular highlights
+            
+            // Subtle caustics approximation (fake)
+            float caustic = pow(max(dot(normal, vec3(0, 1, 0)), 0.0), 2.0) * 0.1;
+            color += vec3(0.5, 0.7, 1.0) * caustic;
+            
+            // Alpha based on thickness + fresnel (thicker = more opaque)
+            float thickAlpha = 1.0 - exp(-thicknessScaled * 2.0);  // Exponential falloff
+            float alpha = mix(thickAlpha * 0.85, 0.98, fresnel);
+            
+            FragColor = vec4(color, alpha);
         }
     )";
     
@@ -558,6 +629,22 @@ void LiquidRenderer::resizeSSFR(int width, int height) {
     glBindFramebuffer(GL_FRAMEBUFFER, ssfrBlurFBO);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssfrBlurTex, 0);
     
+    // Create thickness texture and FBO (for additive accumulation)
+    if (ssfrThickTex) glDeleteTextures(1, &ssfrThickTex);
+    if (ssfrThickFBO) glDeleteFramebuffers(1, &ssfrThickFBO);
+    
+    glGenTextures(1, &ssfrThickTex);
+    glBindTexture(GL_TEXTURE_2D, ssfrThickTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_R32F, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);  // Linear for smooth sampling
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    glGenFramebuffers(1, &ssfrThickFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, ssfrThickFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssfrThickTex, 0);
+    
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -572,7 +659,7 @@ void LiquidRenderer::renderSSFR(const glm::mat4& view, const glm::mat4& projecti
     // Ensure FBOs are the right size
     resizeSSFR(width, height);
     
-    // === Pass 1: Render particle depths ===
+    // === Pass 1a: Render particle depths (closest surface) ===
     glBindFramebuffer(GL_FRAMEBUFFER, ssfrDepthFBO);
     glViewport(0, 0, width, height);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
@@ -586,25 +673,44 @@ void LiquidRenderer::renderSSFR(const glm::mat4& view, const glm::mat4& projecti
     ssfrDepthShader.setMat4("uView", view);
     ssfrDepthShader.setMat4("uProj", projection);
     ssfrDepthShader.setFloat("uPointScale", ssfrPointScale);
-    ssfrDepthShader.setFloat("uPointRadius", 0.015f);  // Particle radius in world space
+    ssfrDepthShader.setFloat("uPointRadius", ssfrParticleRadius);
     
     glBindVertexArray(pointVAO);
     glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(particleCount));
     
-    // === Pass 2: Bilateral blur (horizontal + vertical) ===
+    // === Pass 1b: Render thickness (ADDITIVE - this makes particles merge!) ===
+    glBindFramebuffer(GL_FRAMEBUFFER, ssfrThickFBO);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    
+    glDisable(GL_DEPTH_TEST);  // No depth test - accumulate ALL particles
+    glEnable(GL_BLEND);
+    glBlendFunc(1, 1);  // GL_ONE, GL_ONE - ADDITIVE blending
+    
+    // Use thickness shader - outputs sphere thickness at each pixel
+    ssfrThickShader.use();
+    ssfrThickShader.setMat4("uView", view);
+    ssfrThickShader.setMat4("uProj", projection);
+    ssfrThickShader.setFloat("uPointScale", ssfrPointScale);
+    ssfrThickShader.setFloat("uPointRadius", ssfrParticleRadius);
+    
+    glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(particleCount));
+    
+    // === Pass 2: Curvature flow smoothing ===
+    // Iteratively smooth the depth field based on mean curvature
     glDisable(GL_DEPTH_TEST);
     
-    for (int iter = 0; iter < ssfrBlurIterations; iter++) {
-        // Horizontal blur: depth -> blur
+    glm::vec2 texelSize(1.0f / width, 1.0f / height);
+    
+    for (int iter = 0; iter < ssfrSmoothIterations; iter++) {
+        // Smooth: depth -> blur
         glBindFramebuffer(GL_FRAMEBUFFER, ssfrBlurFBO);
         glClear(GL_COLOR_BUFFER_BIT);
         
         ssfrBlurShader.use();
         ssfrBlurShader.setInt("uDepthTex", 0);
-        ssfrBlurShader.setVec2("uBlurDir", glm::vec2(1.0f / width, 0.0f));
-        ssfrBlurShader.setFloat("uFilterRadius", 30.0f);  // NUCLEAR: Maximum blur radius
-        ssfrBlurShader.setFloat("uBlurScale", ssfrBlurScale * 25.0f);  // EXTREME blur
-        ssfrBlurShader.setFloat("uBlurDepthFalloff", 20.0f);  // Very soft - merge everything
+        ssfrBlurShader.setVec2("uTexelSize", texelSize);
+        ssfrBlurShader.setFloat("uDt", ssfrSmoothDt);
         
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, ssfrDepthTex);
@@ -612,11 +718,10 @@ void LiquidRenderer::renderSSFR(const glm::mat4& view, const glm::mat4& projecti
         glBindVertexArray(ssfrQuadVAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         
-        // Vertical blur: blur -> depth
+        // Copy back: blur -> depth
         glBindFramebuffer(GL_FRAMEBUFFER, ssfrDepthFBO);
         glClear(GL_COLOR_BUFFER_BIT);
         
-        ssfrBlurShader.setVec2("uBlurDir", glm::vec2(0.0f, 1.0f / height));
         glBindTexture(GL_TEXTURE_2D, ssfrBlurTex);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
@@ -634,16 +739,23 @@ void LiquidRenderer::renderSSFR(const glm::mat4& view, const glm::mat4& projecti
     
     ssfrCompositeShader.use();
     ssfrCompositeShader.setInt("uDepthTex", 0);
+    ssfrCompositeShader.setInt("uThickTex", 1);
     ssfrCompositeShader.setMat4("uProjInv", projInv);
-    ssfrCompositeShader.setVec2("uTexelSize", glm::vec2(1.0f / width, 1.0f / height));
+    ssfrCompositeShader.setVec2("uTexelSize", texelSize);
     ssfrCompositeShader.setVec3("uLightDir", lightDir);
-    ssfrCompositeShader.setVec3("uFluidColor", ssfrColor);
+    ssfrCompositeShader.setVec3("uWaterColor", ssfrWaterColor);
+    ssfrCompositeShader.setVec3("uSurfaceColor", ssfrSurfaceColor);
     ssfrCompositeShader.setVec3("uSpecularColor", ssfrSpecular);
     ssfrCompositeShader.setFloat("uShininess", ssfrShininess);
+    ssfrCompositeShader.setFloat("uFresnelBias", ssfrFresnelBias);
+    ssfrCompositeShader.setFloat("uFresnelScale", ssfrFresnelScale);
     ssfrCompositeShader.setFloat("uFresnelPower", ssfrFresnelPower);
+    ssfrCompositeShader.setFloat("uThicknessScale", ssfrThicknessScale);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, ssfrDepthTex);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, ssfrThickTex);
     
     glBindVertexArray(ssfrQuadVAO);
     glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -670,44 +782,31 @@ void LiquidRenderer::buildScalarField(const MpmSim& sim) {
     fieldDx = sim.dx;
     fieldMin = sim.worldMin;
     
-    // Use memset for faster zeroing
+    // Zero the scalar field
     scalarField.assign(fieldNx * fieldNy * fieldNz, 0.0f);
     
-    float invDx = 1.0f / fieldDx;
-    float kernelRadius = g_params.smoothingRadius * fieldDx;
-    float kernelRadius2 = kernelRadius * kernelRadius;
-    float h9 = std::pow(kernelRadius, 9);
-    float poly6Coeff = 315.0f / (64.0f * 3.14159265f * h9);
-    float anisotropy = g_params.meshAnisotropy;
-    bool useAnisotropy = anisotropy > 0.01f;
-    
-    int range = static_cast<int>(std::ceil(g_params.smoothingRadius)) + 1;
+    // Zhu & Bridson style: kernel radius = 2 * dx (EXACTLY as specified)
+    float kernelRadius = 2.0f * fieldDx;
+    float invKernelRadius = 1.0f / kernelRadius;
+    int range = 2;  // 2 cells in each direction
     int strideY = fieldNx;
     int strideZ = fieldNx * fieldNy;
     
+    // For each particle, distribute influence using simple (1-q)^2 kernel
     for (const auto& p : sim.particles) {
-        glm::vec3 gridPos = (p.x - fieldMin) * invDx;
+        // Convert particle position to grid indices
+        glm::vec3 gridPos = (p.x - fieldMin) / fieldDx;
         int baseI = static_cast<int>(gridPos.x);
         int baseJ = static_cast<int>(gridPos.y);
         int baseK = static_cast<int>(gridPos.z);
         
-        // Round 6: Pre-clamp loop bounds to avoid inner checks
+        // Clamp loop bounds
         int iMin = std::max(0, baseI - range);
         int iMax = std::min(fieldNx - 1, baseI + range);
         int jMin = std::max(0, baseJ - range);
         int jMax = std::min(fieldNy - 1, baseJ + range);
         int kMin = std::max(0, baseK - range);
         int kMax = std::min(fieldNz - 1, baseK + range);
-        
-        // Precompute velocity direction if using anisotropy
-        float speed = 0.0f;
-        glm::vec3 velDir(0.0f);
-        if (useAnisotropy) {
-            speed = glm::length(p.v);
-            if (speed > 0.1f) {
-                velDir = p.v / speed;
-            }
-        }
         
         for (int k = kMin; k <= kMax; k++) {
             float cz = fieldMin.z + (k + 0.5f) * fieldDx;
@@ -723,21 +822,14 @@ void LiquidRenderer::buildScalarField(const MpmSim& sim) {
                     float cx = fieldMin.x + (i + 0.5f) * fieldDx;
                     float dx_diff = p.x.x - cx;
                     
-                    float dist2;
-                    if (useAnisotropy && speed > 0.1f) {
-                        glm::vec3 diff(dx_diff, dy, dz);
-                        float alongVel = glm::dot(diff, velDir);
-                        glm::vec3 perp = diff - alongVel * velDir;
-                        float shrunk = alongVel * (1.0f - anisotropy);
-                        dist2 = shrunk * shrunk + glm::dot(perp, perp);
-                    } else {
-                        dist2 = dx_diff * dx_diff + dy * dy + dz * dz;
-                    }
+                    // Distance from particle to cell center
+                    float r = std::sqrt(dx_diff * dx_diff + dy * dy + dz * dz);
                     
-                    if (dist2 < kernelRadius2) {
-                        float term = kernelRadius2 - dist2;
-                        float w = poly6Coeff * term * term * term;
-                        scalarField[i + idxJK] += w * p.mass;
+                    if (r < kernelRadius) {
+                        // Simple (1-q)^2 kernel as specified by Zhu & Bridson
+                        float q = r * invKernelRadius;  // q in [0,1]
+                        float w = (1.0f - q) * (1.0f - q);
+                        scalarField[i + idxJK] += w;
                     }
                 }
             }

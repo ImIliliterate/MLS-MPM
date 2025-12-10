@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\55ced23ff0d4390e71dd71b0da3b71da\glfw-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\55ced23ff0d4390e71dd71b0da3b71da\glfw-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\55ced23ff0d4390e71dd71b0da3b71da\glfw-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\55ced23ff0d4390e71dd71b0da3b71da\glfw-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\55ced23ff0d4390e71dd71b0da3b71da\glfw-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\55ced23ff0d4390e71dd71b0da3b71da\glfw-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\55ced23ff0d4390e71dd71b0da3b71da\glfw-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\55ced23ff0d4390e71dd71b0da3b71da\glfw-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\2d41b3448cf619ac0b83fb3073ffcbb6\glfw-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\17cf80ff0fb81e66212fc41aab3a05ba\glfw-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-subbuild\CMakeFiles\glfw-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{0D604B01-89DF-3C62-BA87-5DDAA2D7E558}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

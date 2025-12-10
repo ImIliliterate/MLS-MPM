@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\CMakeFiles\49740a49b4b0713ca3dfdc15347ac7ef\update_mappings.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-src\src\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-src\src\mappings.h.in">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-src\CMake\GenerateMappings.cmake" />
+    <None Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glfw-build\src\CMakeFiles\update_mappings" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{5AC6197C-2CE7-3A66-9878-C4133B6AD50D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{D3972E77-285A-3A07-B596-014AB432668B}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

@@ -668,12 +668,11 @@ void MpmSim::gridToParticle(float dt) {
         glm::mat3 gradV = p.C;
         p.F = (glm::mat3(1.0f) + dt * gradV) * p.F;
         
-        // For fluid: reset F to preserve volume ratio
+        // For fluid: compute J, then reset F to isotropic (removes shear, keeps volume)
         float J = glm::determinant(p.F);
-        J = glm::clamp(J, 0.6f, 1.5f);
-        J = glm::mix(J, 1.0f, 0.01f);
+        J = glm::clamp(J, 0.8f, 1.2f);  // Clamp for stability
         float cbrtJ = std::cbrt(J);
-        p.F = glm::mat3(cbrtJ);
+        p.F = glm::mat3(cbrtJ);  // F = cbrt(J) * I - no shear, but volume preserved
         
         // Clamp to world bounds
         float margin = 2.0f * dx;
@@ -718,9 +717,11 @@ float MpmSim::dN(float x) const {
 }
 
 void MpmSim::applyCohesionForces(float dt) {
-    const float h = dx * 2.5f;
+    // SPH-based surface tension / cohesion
+    // Creates attractive forces at the liquid surface to keep it together
+    const float h = dx * 3.0f;  // Larger kernel for smoother cohesion
     const float h2 = h * h;
-    const float cohesionStrength = 800.0f;
+    const float cohesionStrength = g_params.cohesionStrength;
     
     std::unordered_map<int64_t, std::vector<int>> spatialHash;
     auto hashPos = [&](const glm::vec3& pos) -> int64_t {
@@ -834,18 +835,22 @@ void MpmSim::applyCohesionForces(float dt) {
 }
 
 glm::mat3 MpmSim::computeStress(const Particle& p) const {
-    float E = p.E;
-    float nu = p.nu;
-    
-    float mu = E / (2.0f * (1.0f + nu));
-    float lambda = E * nu / ((1.0f + nu) * (1.0f - 2.0f * nu));
+    // Fluid stress based on MLS-MPM (Hu et al. 2018)
+    // For fluid: only pressure, no shear resistance
     
     float J = glm::determinant(p.F);
-    J = std::max(J, 0.1f);
+    J = glm::clamp(J, 0.1f, 2.0f);
     
-    float bulkModulus = lambda + 2.0f * mu / 3.0f;
-    float pressure = bulkModulus * (J - 1.0f);
+    // Equation of state: p = K * (1 - J)
+    // When J < 1 (compressed): p > 0, fluid pushes outward
+    // When J > 1 (expanded): p < 0, fluid pulls inward
+    float K = p.E;  // Using E as bulk modulus for fluid
+    float pressure = K * (1.0f - J);
     
+    // Clamp pressure for stability
+    pressure = glm::clamp(pressure, -10000.0f, 10000.0f);
+    
+    // Cauchy stress: σ = -p * I
     glm::mat3 stress = -pressure * glm::mat3(1.0f);
     
     return stress;

@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\64878e46a0efbe318190cdb1d4b1e6c9\glm-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\64878e46a0efbe318190cdb1d4b1e6c9\glm-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\64878e46a0efbe318190cdb1d4b1e6c9\glm-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\64878e46a0efbe318190cdb1d4b1e6c9\glm-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\64878e46a0efbe318190cdb1d4b1e6c9\glm-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\64878e46a0efbe318190cdb1d4b1e6c9\glm-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\64878e46a0efbe318190cdb1d4b1e6c9\glm-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\64878e46a0efbe318190cdb1d4b1e6c9\glm-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\896077b7853e5854f65e11daab0eabae\glm-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\2950cca2b051d3b824f9c0065488022b\glm-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\glm-subbuild\CMakeFiles\glm-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{2D411360-89C4-3717-AE9B-F648074F4E00}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

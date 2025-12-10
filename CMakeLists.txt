@@ -28,6 +28,8 @@ option(USE_CUDA "Enable CUDA support for GPU acceleration" OFF)
 if(USE_CUDA)
     set(CMAKE_CUDA_STANDARD 14)
     set(CMAKE_CUDA_STANDARD_REQUIRED ON)
+    # RTX 5070 Ti = Blackwell (sm_120), must be set BEFORE enable_language(CUDA)
+    set(CMAKE_CUDA_ARCHITECTURES "120")
     enable_language(CUDA)
     find_package(CUDAToolkit REQUIRED)
 endif()
@@ -139,8 +141,6 @@ endif()
 
 # CUDA sources if enabled
 if(USE_CUDA)
-    # Target Ada/Lovelace (RTX 40-series); fallback to PTX if unknown
-    set(CMAKE_CUDA_ARCHITECTURES 89)
     target_sources(mpm_smoke PRIVATE
         src/gpu/mpm_kernels.cu
         src/gpu/smoke_kernels.cu

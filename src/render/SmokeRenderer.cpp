@@ -81,6 +81,35 @@ bool SmokeRenderer::initShader() {
         uniform float uAbsorption;
         uniform float uShadowSteps;
         uniform float uShadowDensity;
+        uniform float uScatteringG;
+        uniform float uAmbientStrength;
+        uniform float uTime;
+        
+        // Henyey-Greenstein phase function
+        float phaseHG(float cosTheta, float g) {
+            float g2 = g * g;
+            float denom = 1.0 + g2 - 2.0 * g * cosTheta;
+            return (1.0 - g2) / (4.0 * 3.14159 * pow(denom, 1.5));
+        }
+        
+        // Simple 3D noise for detail
+        float hash(vec3 p) {
+            p = fract(p * vec3(443.8975, 397.2973, 491.1871));
+            p += dot(p.zxy, p.yxz + 19.19);
+            return fract(p.x * p.y * p.z);
+        }
+        
+        float noise3D(vec3 p) {
+            vec3 i = floor(p);
+            vec3 f = fract(p);
+            f = f * f * (3.0 - 2.0 * f);
+            
+            return mix(
+                mix(mix(hash(i), hash(i + vec3(1,0,0)), f.x),
+                    mix(hash(i + vec3(0,1,0)), hash(i + vec3(1,1,0)), f.x), f.y),
+                mix(mix(hash(i + vec3(0,0,1)), hash(i + vec3(1,0,1)), f.x),
+                    mix(hash(i + vec3(0,1,1)), hash(i + vec3(1,1,1)), f.x), f.y), f.z);
+        }
         
         // Ray-box intersection
         vec2 intersectBox(vec3 ro, vec3 rd, vec3 boxMin, vec3 boxMax) {
@@ -146,14 +175,24 @@ bool SmokeRenderer::initShader() {
                 float density = sampleDensity(pos) * uDensityScale;
                 
                 if (density > 0.001) {
-                    // Beer-Lambert absorption
+                    // Add noise detail to density
+                    float noiseVal = noise3D(pos * 8.0 + vec3(uTime * 0.5, 0, 0));
+                    density *= (0.7 + 0.6 * noiseVal);  // Vary density by noise
+                    
+                    // Beer-Lambert absorption (low for bright fog)
                     float alpha = 1.0 - exp(-density * uAbsorption * stepSize);
                     
-                    // Lighting with shadow
+                    // Lighting: strong ambient + directional with phase function
                     float shadow = shadowRay(pos, lightDir);
-                    vec3 color = uSmokeColor * uLightColor * (0.2 + 0.8 * shadow);
+                    float cosTheta = dot(rayDir, lightDir);
+                    float phase = phaseHG(cosTheta, uScatteringG);
                     
-                    // Accumulate
+                    // Bright ambient + soft directional
+                    vec3 ambient = uSmokeColor * uAmbientStrength;
+                    vec3 directional = uSmokeColor * uLightColor * shadow * phase * 1.5;
+                    vec3 color = ambient + directional;
+                    
+                    // Accumulate with front-to-back compositing
                     accumulatedColor += (1.0 - accumulatedAlpha) * alpha * color;
                     accumulatedAlpha += (1.0 - accumulatedAlpha) * alpha;
                 }
@@ -225,6 +264,13 @@ void SmokeRenderer::render(const glm::mat4& view, const glm::mat4& projection,
     shader.setFloat("uAbsorption", absorptionCoeff);
     shader.setFloat("uShadowSteps", shadowSteps);
     shader.setFloat("uShadowDensity", shadowDensity);
+    shader.setFloat("uScatteringG", scatteringG);
+    shader.setFloat("uAmbientStrength", ambientStrength);
+    
+    // Animated time for noise
+    static float time = 0.0f;
+    time += 0.016f;  // ~60fps
+    shader.setFloat("uTime", time);
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_3D, densityTexture);

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\MpmSim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\SmokeSim.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\Coupling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\SDF.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\sim\SimulationParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\render\LiquidRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\render\SmokeRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\render\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\src\render\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="..\src\gpu\mpm_kernels.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\src\gpu\smoke_kernels.cu">
+      <Filter>Source Files</Filter>
+    </CudaCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{A4F06589-69C0-3A08-81EA-6F302E0C089E}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

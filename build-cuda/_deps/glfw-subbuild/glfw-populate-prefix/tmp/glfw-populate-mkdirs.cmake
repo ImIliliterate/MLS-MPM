@@ -18,7 +18,7 @@ file(MAKE_DIRECTORY
   "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp"
 )
 
-set(configSubDirs )
+set(configSubDirs Debug)
 foreach(subDir IN LISTS configSubDirs)
     file(MAKE_DIRECTORY "C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glfw-subbuild/glfw-populate-prefix/src/glfw-populate-stamp/${subDir}")
 endforeach()

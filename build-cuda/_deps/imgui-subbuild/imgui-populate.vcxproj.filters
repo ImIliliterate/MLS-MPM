@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\fdcbfbeec6b019ed95c9ed19dbc33d6e\imgui-populate-mkdir.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\fdcbfbeec6b019ed95c9ed19dbc33d6e\imgui-populate-download.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\fdcbfbeec6b019ed95c9ed19dbc33d6e\imgui-populate-update.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\fdcbfbeec6b019ed95c9ed19dbc33d6e\imgui-populate-patch.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\fdcbfbeec6b019ed95c9ed19dbc33d6e\imgui-populate-configure.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\fdcbfbeec6b019ed95c9ed19dbc33d6e\imgui-populate-build.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\fdcbfbeec6b019ed95c9ed19dbc33d6e\imgui-populate-install.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\fdcbfbeec6b019ed95c9ed19dbc33d6e\imgui-populate-test.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\24b6aa121a3c76e264152ae6382d387e\imgui-populate-complete.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\14848d090df77e1645ae6a6917716026\imgui-populate.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+    <CustomBuild Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\a2dsu\OneDrive\Documents\GitHub\MLS-MPM\build-cuda\_deps\imgui-subbuild\CMakeFiles\imgui-populate" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{077613B6-8DBD-3EA0-8CAC-9A03EA00C4F3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

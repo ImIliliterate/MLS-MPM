@@ -1163,6 +1163,116 @@ __global__ void applySmokeDragKernel(
     p.v.z += dvz;
 }
 
+// Kernel to create splash plumes and mist from water particles
+__global__ void injectSplashPlumeKernel(
+    const SmokeParticleGPU* particles,
+    float* density,
+    float* u, float* v, float* w,
+    int numParticles,
+    int Nx, int Ny, int Nz,
+    float3 worldMin, float invDx, float dx,
+    float densityAmount,
+    float velocityAmount
+) {
+    int idx = blockIdx.x * blockDim.x + threadIdx.x;
+    if (idx >= numParticles) return;
+    
+    const SmokeParticleGPU& p = particles[idx];
+    
+    // Total speed
+    float speed2 = p.v.x*p.v.x + p.v.y*p.v.y + p.v.z*p.v.z;
+    float speed = sqrtf(speed2);
+    
+    // Skip very slow particles
+    if (speed < 0.1f) return;
+    
+    // Grid position
+    float gx = (p.x.x - worldMin.x) * invDx;
+    float gy = (p.x.y - worldMin.y) * invDx;
+    float gz = (p.x.z - worldMin.z) * invDx;
+    
+    int i = (int)gx;
+    int j = (int)gy;
+    int k = (int)gz;
+    
+    // Bounds check
+    if (i < 0 || i >= Nx || j < 0 || j >= Ny || k < 0 || k >= Nz) return;
+    
+    int cellIdx = i + Nx * (j + Ny * k);
+    
+    // ALL moving water creates mist - INSANE 100x
+    float baseDensity = densityAmount * speed * 0.5f;
+    atomicAdd(&density[cellIdx], baseDensity);
+    
+    // IMPACT DETECTION - any downward motion near floor
+    float downSpeed = -p.v.y;
+    float floorDist = gy;
+    
+    // INSANE VERTICAL JET - 100x everything for unmissable effect
+    if (downSpeed > 0.05f && floorDist < 30.0f) {
+        float impactStrength = downSpeed * (1.0f - floorDist / 30.0f);
+        
+        // INSANE density burst - 100x
+        float densityBurst = densityAmount * impactStrength * 100.0f;
+        atomicAdd(&density[cellIdx], densityBurst);
+        
+        // INSANE upward velocity - 100x = rockets
+        float upwardVel = velocityAmount * impactStrength * 2000.0f;
+        
+        // Create MASSIVE vertical column - entire domain height
+        int plumeHeight = min(40, Ny - j - 1);
+        for (int jj = j; jj < j + plumeHeight; jj++) {
+            float heightRatio = (float)(jj - j) / (float)plumeHeight;
+            float falloff = 1.0f - heightRatio * heightRatio;  // Slow falloff
+            
+            int colIdx = i + Nx * (jj + Ny * k);
+            atomicAdd(&density[colIdx], densityBurst * falloff);
+            
+            // STRONG upward velocity through entire column
+            int vIdx = i + Nx * (jj + (Ny + 1) * k);
+            if (vIdx >= 0 && vIdx < Nx * (Ny + 1) * Nz) {
+                atomicAdd(&v[vIdx], upwardVel * falloff);
+            }
+        }
+        
+        // INSANE neighbor density for MASSIVE plume - 100x
+        for (int di = -4; di <= 4; di++) {
+            for (int dk = -4; dk <= 4; dk++) {
+                if (di == 0 && dk == 0) continue;
+                int ni = i + di;
+                int nk = k + dk;
+                if (ni >= 0 && ni < Nx && nk >= 0 && nk < Nz) {
+                    for (int jj = j; jj < j + plumeHeight; jj++) {
+                        int nIdx = ni + Nx * (jj + Ny * nk);
+                        float dist = sqrtf((float)(di*di + dk*dk));
+                        atomicAdd(&density[nIdx], densityBurst * 2.0f / dist);
+                    }
+                }
+            }
+        }
+        
+        // INSANE radial outward blast - 100x
+        float radialVel = velocityAmount * impactStrength * 1000.0f;
+        
+        if (i > 0) {
+            int uIdxL = i + (Nx+1) * (j + Ny * k);
+            atomicAdd(&u[uIdxL], -radialVel);
+        }
+        if (i < Nx - 1) {
+            int uIdxR = (i+1) + (Nx+1) * (j + Ny * k);
+            atomicAdd(&u[uIdxR], radialVel);
+        }
+        if (k > 0) {
+            int wIdxB = i + Nx * (j + Ny * k);
+            atomicAdd(&w[wIdxB], -radialVel);
+        }
+        if (k < Nz - 1) {
+            int wIdxF = i + Nx * (j + Ny * (k+1));
+            atomicAdd(&w[wIdxF], radialVel);
+        }
+    }
+}
+
 // Kernel to transfer particle momentum to smoke grid (with atomicAdd)
 // OPTIMIZED: Skip slow particles to reduce atomic contention
 __global__ void applyParticleToSmokeKernel(
@@ -1333,19 +1443,17 @@ void smokeCudaApplyParticlesToSmoke(
     SMOKE_CUDA_CHECK(cudaMemset(d_weightV, 0, vCount * sizeof(float)));
     SMOKE_CUDA_CHECK(cudaMemset(d_weightW, 0, wCount * sizeof(float)));
     
-    applyParticleToSmokeKernel<<<blocks, threads>>>(
+    // Create EXPLOSIVE splash plumes - density + velocity burst on impact
+    injectSplashPlumeKernel<<<blocks, threads>>>(
         (const SmokeParticleGPU*)d_mpmParticles,
+        d_density,
         d_u, d_v, d_w,
-        d_weightU, d_weightV, d_weightW,
         numParticles,
         s_Nx, s_Ny, s_Nz,
-        worldMin, invDx,
-        couplingStrength
+        worldMin, invDx, dx,
+        couplingStrength,       // Density amount
+        couplingStrength * 0.5f // Velocity amount
     );
-    
-    // Normalize by weights (blend with existing velocity)
-    // For now, skip normalization - just add the momentum directly
-    // A more sophisticated version would blend based on weights
 }
 
 }  // extern "C"

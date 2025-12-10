@@ -1,0 +1,10 @@
+^C:\USERS\A2DSU\ONEDRIVE\DOCUMENTS\GITHUB\MLS-MPM\BUILD-CUDA\_DEPS\GLM-SUBBUILD\CMAKEFILES\2950CCA2B051D3B824F9C0065488022B\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glm-subbuild -BC:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glm-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/a2dsu/OneDrive/Documents/GitHub/MLS-MPM/build-cuda/_deps/glm-subbuild/glm-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
